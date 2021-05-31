@@ -1,0 +1,265 @@
+<?xml version="1.0" ?>
+<sdf version='1.6'>
+  <world name='default'>
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose frame=''>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.5 -1</direction>
+    </light>
+    <model name='ground_plane'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics name='default_physics' default='0' type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <light name='light1' type='spot'>
+      <pose frame=''>0.052834 -0.490909 1 0 -0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>0 0 -1</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <spot>
+        <inner_angle>0.6</inner_angle>
+        <outer_angle>1</outer_angle>
+        <falloff>1</falloff>
+      </spot>
+    </light>
+    <light name='light2' type='spot'>
+      <pose frame=''>0.052834 -0.490909 1 0 -0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>0 0 -1</direction>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <spot>
+        <inner_angle>0.6</inner_angle>
+        <outer_angle>1</outer_angle>
+        <falloff>1</falloff>
+      </spot>
+    </light>
+    <state world_name='default'>
+      <sim_time>221 618000000</sim_time>
+      <real_time>445 734754296</real_time>
+      <wall_time>1583660561 69755851</wall_time>
+      <iterations>221618</iterations>
+      <model name='box'>
+        <pose frame=''>-0.289996 0.860002 0.989761 0 0 -0.00018</pose>
+        <scale>1 1 1</scale>
+        <link name='block'>
+          <pose frame=''>-0.289996 0.860002 0.989761 0 0 -0.00018</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 -9.8 0 -0 0</acceleration>
+          <wrench>0 0 -0.98 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='coke'>
+        <pose frame=''>0.749955 0.99816 0.996907 -1.56811 0.793458 -1.57378</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>0.749955 0.99816 0.996907 -1.56811 0.793458 -1.57378</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>-4.2e-05 -0.000227 -1.1e-05 0.022321 -0.00139 2.8e-05</acceleration>
+          <wrench>-1.7e-05 -8.9e-05 -4e-06 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ground_plane'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='table'>
+        <pose frame=''>0 1 0.648 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>0 1 0.648 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='yixiuge_ur5'>
+        <pose frame=''>0 0 1.2 2.9e-05 3e-05 -2e-06</pose>
+        <scale>1 1 1</scale>
+        <link name='base_link'>
+          <pose frame=''>0 0 1.2 2.9e-05 3e-05 -2e-06</pose>
+          <velocity>-1.9e-05 1.7e-05 3.8e-05 0.000703 -0.00069 -0.009829</velocity>
+          <acceleration>-0.038533 0.033853 0.075192 1.44542 -1.42472 -0.3145</acceleration>
+          <wrench>-0.154133 0.13541 0.300769 0 -0 0</wrench>
+        </link>
+        <link name='forearm_link'>
+          <pose frame=''>-0.016382 0.214722 1.65592 -3.14131 1.16838 -1.56963</pose>
+          <velocity>0.000536 0.003648 -0.002266 -0.010029 0.00345 0.001174</velocity>
+          <acceleration>0.059141 2.87739 -4.07521 -0.620076 -0.48289 1.48116</acceleration>
+          <wrench>0.134545 6.54607 -9.2711 0 -0 0</wrench>
+        </link>
+        <link name='gripper_finger1_finger_tip_link'>
+          <pose frame=''>-0.160208 0.670024 1.31549 -0.724681 1.56982 -2.2946</pose>
+          <velocity>-0.000186 0.00987 -0.003924 0.133645 -0.013302 0.002</velocity>
+          <acceleration>-0.185902 9.86953 -3.92378 -3.09048 1.49228 -0.246678</acceleration>
+          <wrench>-0.003635 0.192999 -0.076729 0 -0 0</wrench>
+        </link>
+        <link name='gripper_finger1_inner_knuckle_link'>
+          <pose frame=''>-0.122582 0.670089 1.35851 -0.716783 1.56982 -2.2867</pose>
+          <velocity>-0.000625 0.006297 -0.003419 0.139407 -0.013647 0.002028</velocity>
+          <acceleration>-0.625179 6.29726 -3.41885 0.360744 -1.13105 1.21594</acceleration>
+          <wrench>-0.018725 0.188609 -0.102398 0 -0 0</wrench>
+        </link>
+        <link name='gripper_finger1_knuckle_link'>
+          <pose frame=''>-0.140478 0.670078 1.36504 -0.778385 1.56975 -2.3483</pose>
+          <velocity>-0.000818 0.005613 -0.003637 0.024151 -0.011391 0.016986</velocity>
+          <acceleration>-0.845612 5.23507 -3.85169 0.006825 -0.69638 -2.0534</acceleration>
+          <wrench>-0.038729 0.239766 -0.176407 0 -0 0</wrench>
+        </link>
+        <link name='gripper_finger2_finger_tip_link'>
+          <pose frame=''>-0.059609 0.670112 1.31543 2.47896 1.56984 -2.23255</pose>
+          <velocity>-0.000266 0.011834 -0.002536 0.153779 -0.015898 0.027078</velocity>
+          <acceleration>-0.266265 11.834 -2.53623 -1.29436 -0.634404 -0.411717</acceleration>
+          <wrench>-0.005207 0.231413 -0.049596 0 -0 0</wrench>
+        </link>
+        <link name='gripper_finger2_inner_knuckle_link'>
+          <pose frame=''>-0.097182 0.670111 1.35849 2.47026 1.56983 -2.24125</pose>
+          <velocity>-0.00065 0.006653 -0.003023 0.160145 -0.016291 0.027643</velocity>
+          <acceleration>-0.650288 6.65341 -3.02329 -1.33523 -1.38462 -0.977827</acceleration>
+          <wrench>-0.019477 0.199276 -0.090551 0 -0 0</wrench>
+        </link>
+        <link name='gripper_finger2_knuckle_link'>
+          <pose frame=''>-0.079276 0.670132 1.36499 2.35531 1.56974 -2.3562</pose>
+          <velocity>-0.000844 0.006477 -0.002852 0.022705 -0.010497 0.009481</velocity>
+          <acceleration>-0.869408 6.5997 -2.65448 1.82419 -1.34547 0.794259</acceleration>
+          <wrench>-0.039819 0.302266 -0.121575 0 -0 0</wrench>
+        </link>
+        <link name='shoulder_link'>
+          <pose frame=''>2e-06 -2e-06 1.28916 -6.1e-05 5.8e-05 1.5717</pose>
+          <velocity>0.000422 -0.000502 -4.6e-05 0.000676 0.003532 -0.006727</velocity>
+          <acceleration>0.422289 -0.501615 -0.046055 -2.4658 -0.390621 2.69825</acceleration>
+          <wrench>1.56247 -1.85598 -0.170403 0 -0 0</wrench>
+        </link>
+        <link name='upper_arm_link'>
+          <pose frame=''>-0.135849 -0.000123 1.28915 -0.000124 0.529688 1.57164</pose>
+          <velocity>0.000531 -5.1e-05 -0.000576 -0.009423 -0.000538 -0.001225</velocity>
+          <acceleration>0.573785 2.22619 -1.90876 0.004694 -0.215718 -1.01806</acceleration>
+          <wrench>4.81578 18.6844 -16.0202 0 -0 0</wrench>
+        </link>
+        <link name='wrist_1_link'>
+          <pose frame=''>-0.016691 0.57564 1.5023 -2.99334 1.57004 -1.42163</pose>
+          <velocity>-0.00052 0.00196 -0.007146 -0.014636 0.002055 0.004216</velocity>
+          <acceleration>-0.519906 1.56735 -6.95333 1.07128 0.742215 0.471581</acceleration>
+          <wrench>-0.633765 1.9106 -8.47611 0 -0 0</wrench>
+        </link>
+        <link name='wrist_2_link'>
+          <pose frame=''>-0.10969 0.575556 1.50229 -1.57154 0.000738 0.000899</pose>
+          <velocity>-0.001422 0.001688 -0.00391 0.003955 -0.002249 0.010073</velocity>
+          <acceleration>-2.37522 1.68743 -3.53569 0.813758 -0.516483 -0.790579</acceleration>
+          <wrench>-2.8954 2.05698 -4.31 0 -0 0</wrench>
+        </link>
+        <link name='wrist_3_link'>
+          <pose frame=''>-0.109775 0.670206 1.50222 -1.57154 0.000742 0.000881</pose>
+          <velocity>-0.002339 0.002191 -0.003344 0.023879 -0.010297 0.012796</velocity>
+          <acceleration>-1.67907 4.0714 -3.06178 1.88937 1.22613 3.1206</acceleration>
+          <wrench>-1.5529 3.76548 -2.83173 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose frame=''>0 0 10 0 -0 0</pose>
+      </light>
+      <light name='light1'>
+        <pose frame=''>0 0 10 0 -0 0</pose>
+      </light>
+      <light name='light2'>
+        <pose frame=''>0 3 1.5 -1.5 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>-2.38753 1.50057 2.45966 0 0.479642 -0.471808</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+  </world>
+</sdf>

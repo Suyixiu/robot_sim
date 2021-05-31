@@ -1,0 +1,18 @@
+<package>
+    <name>dh_robotics_ag95_simulation</name>
+    <version>0.0.1</version>
+    
+    <description>Simulation meta package for DH-robotics ag95 gripper</description>
+    <maintainer email="renjie.ding@dh-robotics.com">Shelling Ding</maintainer>
+    <author>Shelling Ding</author>
+    <url type="website">https://github.com/DH-Robotics</url>
+    <license>BSD</license>
+    
+    <buildtool_depend>catkin</buildtool_depend>
+    
+    <run_depend>dh_robotics_ag95_gazebo</run_depend>
+    <run_depend>roboticsgroup_gazebo_plugins</run_depend>
+    <export>
+        <metapackage/>
+    </export>
+</package>

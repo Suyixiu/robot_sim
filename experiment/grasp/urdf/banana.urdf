@@ -1,0 +1,64 @@
+<robot name="banana">
+  <link name="banana_link">
+
+    <inertial>
+      <origin xyz="0.008419 0.000166 0.084099" rpy="0 0 0" />
+      <mass value="0.01" />
+      <inertia ixx="3.5873e-05" ixy="1.5e-8" ixz="-6.393e-6" iyy="3.8443e-5" iyz="1.5e-8" izz="5.457e-6" />
+      <!-- <mass value="0.1" />
+      <inertia ixx="3.5873e-04" ixy="1.5e-7" ixz="-6.393e-5" iyy="3.8443e-4" iyz="-1.5e-7" izz="5.457e-5" /> -->
+      <!-- <mass value="1" />
+      <inertia ixx="3.5873e-03" ixy="1.5e-6" ixz="-6.393e-4" iyy="3.8443e-3" iyz="-1.5e-6" izz="5.457e-4" /> -->
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://robot_sim/grasp/urdf/meshes/banana.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://robot_sim/grasp/urdf/meshes/banana.dae" />
+      </geometry>
+    </collision>
+
+  </link>
+
+  <gazebo reference="banana_link">
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+  </gazebo>
+
+</robot>
+
+<!-- 这是放大了10倍输出的结果 放大10倍是为了Inertia Tensor的精度
+Filters->Normals,Curvatures and Orientation->Transform:Scale,Normalize->X Axis 倍数
+Filters->Quality Measure and Computations->Compute Geometric Measures
+
+Mesh Bounding Box Size 0.772784 0.386718 1.818567
+Mesh Bounding Box Diag 2.013438 
+Mesh Bounding Box min -0.386392 -0.193359 0.000000
+Mesh Bounding Box max 0.386392 0.193359 1.818567
+Mesh Surface Area is 2.098398
+Mesh Total Len of 7680 Edges is 262.790222 Avg Len 0.034217
+Mesh Total Len of 7680 Edges is 262.790222 Avg Len 0.034217 (including faux edges))
+Thin shell (faces) barycenter: 0.068169 0.001848 0.852992
+Vertices barycenter -0.006236 0.002130 0.991042
+Mesh Volume is 0.174295
+Center of Mass is 0.084190 0.001663 0.840995<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<除以倍数就是原质心位置
+Inertia Tensor is :
+| 0.035873 0.000015 -0.006393 |                   ixx ixy ixz
+| 0.000015 0.038443 -0.000015 |                       iyy iyz   都除以倍数之后就是质量为1时的惯性矩阵   若要改质量则矩阵中的元素与质量成正比
+| -0.006393 -0.000015 0.005457 |                          izz
+Principal axes are :
+| -0.197649 -0.000343 -0.980273 |
+| -0.980180 0.013812 0.197626 |
+| -0.013472 -0.999905 0.003066 |
+axis momenta are :
+| 0.004168 0.037162 0.038443 |
+Applied filter Compute Geometric Measures in 49 msec 
+ -->
+

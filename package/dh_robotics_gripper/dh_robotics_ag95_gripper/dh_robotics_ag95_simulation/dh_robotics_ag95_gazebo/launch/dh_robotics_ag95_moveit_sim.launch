@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- ROS Driver, Robot State Publisher, and sensors -->
+    <node pkg="sdelay_launch" type="timed_roslaunch"
+        args="1 dh_robotics_ag95_gazebo dh_robotics_ag95.launch"
+        name="dh_robotics_ag95_gazebo_bringup" output="screen"/>
+        
+    <!-- MoveIt! configuration -->
+    <node pkg="sdelay_launch" type="timed_roslaunch"
+        args="8 dh_robotics_ag95_moveit_config dh_robotics_ag95_moveit_planning_execution.launch sim:=true"
+        name="dh_robotics_ag95_moveit_bringup" output="screen"/>
+
+    <!-- Kinematics test -->
+    <node pkg="sdelay_launch" type="timed_roslaunch"
+        args="12 dh_robotics_ag95_gazebo test_kinematics.launch"
+        name="dh_robotics_ag95_kintest_bringup" output="screen"/>
+
+</launch>

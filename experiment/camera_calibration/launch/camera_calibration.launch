@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find robot_sim)/camera_calibration/world/Gravity_free.world"/>
+  </include>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find robot_sim)/camera_calibration/urdf/yixiuge_d435i_gazebo.xacro'" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-y 0.0 -z 0.5 -urdf -param robot_description -model robot " respawn="false" output="screen" />
+
+  <node name="spawn_sdf" pkg="gazebo_ros" type="spawn_model" args="-file $(find robot_sim)/camera_calibration/urdf/small_checkerboard.sdf -sdf -model small_checkerboard -x -0.03 -y -0.03 -z 0.2" />
+
+</launch>
+
+

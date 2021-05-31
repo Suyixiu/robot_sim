@@ -1,0 +1,8 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: dh_robotics_ag95_description
+    relative_path: urdf/dh_robotics_ag95_gripper.xacro
+  SRDF:
+    relative_path: config/dh_robotics_ag95_gripper.srdf
+  CONFIG:
+    generated_timestamp: 1456114391

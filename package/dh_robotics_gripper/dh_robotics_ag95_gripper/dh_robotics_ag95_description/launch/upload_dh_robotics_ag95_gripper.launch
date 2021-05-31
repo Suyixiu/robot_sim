@@ -1,0 +1,6 @@
+<launch>
+    <arg name="test" default="false"/>
+    
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find dh_robotics_ag95_description)/urdf/dh_robotics_ag95_gripper.xacro'" unless="$(arg test)"/>
+    
+</launch>

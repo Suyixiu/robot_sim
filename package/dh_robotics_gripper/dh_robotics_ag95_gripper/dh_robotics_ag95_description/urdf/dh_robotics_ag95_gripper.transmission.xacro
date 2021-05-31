@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="dh_robotics_ag95_gripper_transmission" params="prefix">
+
+        <transmission name="${prefix}gripper_finger1_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${prefix}gripper_finger1_joint">
+                <hardwareInterface>PositionJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${prefix}gripper_finger1_motor">
+                <mechanicalReduction>1</mechanicalReduction>
+                <hardwareInterface>PositionJointInterface</hardwareInterface>
+            </actuator>
+        </transmission>
+        
+        <gazebo>
+                <!-- loading plugin: mimic joints works in gazebo now -->
+            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_dh_robotics_ag95_1">
+                <joint>${prefix}gripper_finger1_joint</joint>
+                <mimicJoint>${prefix}gripper_finger2_joint</mimicJoint>
+                <multiplier>1.0</multiplier>
+                <offset>0.0</offset>
+            </plugin>
+            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_dh_robotics_ag95_2">
+                <joint>${prefix}gripper_finger1_joint</joint>
+                <mimicJoint>${prefix}gripper_finger2_inner_knuckle_joint</mimicJoint>
+                <multiplier>1.49462955</multiplier>
+                <offset>0.0</offset>
+            </plugin>
+            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_dh_robotics_ag95_3">
+                <joint>${prefix}gripper_finger1_joint</joint>
+                <mimicJoint>${prefix}gripper_finger1_inner_knuckle_joint</mimicJoint>
+                <multiplier>1.49462955</multiplier>
+                <offset>0.0</offset>
+            </plugin>
+            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_dh_robotics_ag95_4">
+                <joint>${prefix}gripper_finger1_joint</joint>
+                <mimicJoint>${prefix}gripper_finger1_finger_tip_joint</mimicJoint>
+                <multiplier>1.49462955</multiplier>
+                <offset>0.0</offset>
+            </plugin>
+            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_dh_robotics_ag95_5">
+                <joint>${prefix}gripper_finger1_joint</joint>
+                <mimicJoint>${prefix}gripper_finger2_finger_tip_joint</mimicJoint>
+                <multiplier>1.49462955</multiplier>
+                <offset>0.0</offset>
+            </plugin>
+            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_dh_robotics_ag95_6">
+                <joint>${prefix}gripper_finger1_joint</joint>
+                <mimicJoint>${prefix}gripper_finger1_finger_joint</mimicJoint>
+                <multiplier>0.4563942</multiplier>
+                <offset>0.0</offset>
+            </plugin>
+            <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_dh_robotics_ag95_7">
+                <joint>${prefix}gripper_finger1_joint</joint>
+                <mimicJoint>${prefix}gripper_finger2_finger_joint</mimicJoint>
+                <multiplier>0.4563942</multiplier>
+                <offset>0.0</offset>
+            </plugin>
+        </gazebo>
+
+    </xacro:macro>
+
+</robot>

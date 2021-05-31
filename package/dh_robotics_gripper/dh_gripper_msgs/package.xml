@@ -1,0 +1,19 @@
+<package>
+    <name>dh_gripper_msgs</name>
+    <version>0.0.1</version>
+    <description>Messages for dh-roboitics gripper Driver</description>
+    
+    <maintainer email="renjie.ding@dh-robotics.com">DH-Robotics Inc.</maintainer>
+    <license>BSD</license>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <!-- Packages needed to build and run-->
+    <build_depend>roslaunch</build_depend>
+    <build_depend>message_generation</build_depend>
+    <run_depend>message_runtime</run_depend>  
+    <build_depend>std_msgs</build_depend>
+    <run_depend>std_msgs</run_depend>
+	<export>
+	</export>
+</package>

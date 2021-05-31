@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="load_rviz" default="false"/>
+    <arg name="load_rqt_reconfigure" default="false"/>
+
+    <include file="$(find yixiuge_ur10_moveit_config)/launch/yixiuge_ur_gazebo.launch">
+    </include>
+
+    <include file="$(find yixiuge_ur10_moveit_config)/launch/yixiuge_ur10_moveit_planning_execution.launch">
+        <arg name="sim" value="true" />
+    </include>
+    <include file="$(find yixiuge_ur10_moveit_config)/launch/moveit_rviz.launch" if="$(eval load_rviz == 'ture')"/>
+
+    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure" output="screen" if="$(eval load_rqt_reconfigure == 'ture')"/>
+
+</launch>

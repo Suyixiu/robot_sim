@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<package>
+  <name>robot_sim</name>
+  <version>0.0.0</version>
+  <description>The robot_sim package</description>
+
+
+  <maintainer email="2270678755@qq.com">suyixiu</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslaunch</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>rostime</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>nav_msgs</build_depend>
+  <build_depend>move_base_msgs</build_depend>
+  <build_depend>actionlib</build_depend>
+  <build_depend>control_msgs</build_depend>
+  <build_depend>trajectory_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <!-- <build_depend>Eigen</build_depend> -->
+  <build_depend>moveit_core</build_depend>
+  <build_depend>moveit_ros_perception</build_depend>
+  <build_depend>moveit_ros_planning_interface</build_depend>
+  <build_depend>pluginlib</build_depend>
+  <build_depend>interactive_markers</build_depend>
+  <build_depend>moveit_msgs</build_depend>
+  <build_depend>interactive_markers</build_depend>
+  <build_depend>actionlib_msgs</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>image_transport</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>
+  <build_depend>libpcl-all-dev</build_depend>
+  <build_depend>moveit_visual_tools</build_depend>
+  <build_depend>serial</build_depend>
+
+
+  <run_depend>interactive_markers</run_depend>
+  <run_depend>actionlib_msgs</run_depend>
+  <!-- <run_depend>Eigen</run_depend> -->
+  <run_depend>moveit_core</run_depend>
+  <run_depend>moveit_ros_perception</run_depend>
+  <run_depend>moveit_ros_planning_interface</run_depend>
+  <run_depend>pluginlib</run_depend>
+  <run_depend>interactive_markers</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>rostime</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>nav_msgs</run_depend>
+  <run_depend>move_base_msgs</run_depend>
+  <run_depend>actionlib</run_depend>
+  <run_depend>control_msgs</run_depend>
+  <run_depend>trajectory_msgs</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>moveit_commander</run_depend>
+  <run_depend>moveit_core</run_depend>
+  <run_depend>moveit_planners</run_depend>
+  <run_depend>moveit_plugins</run_depend>
+  <run_depend>moveit_ros</run_depend>
+  <run_depend>moveit_setup_assistant</run_depend>
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>image_transport</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
+  <run_depend>libpcl-all-dev</run_depend>
+  <run_depend>moveit_visual_tools</run_depend>
+  <run_depend>serial</run_depend>
+
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+  </export>
+</package>

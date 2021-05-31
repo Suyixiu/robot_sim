@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="marker_size" doc="Size of the ArUco marker used, in meters" value="0.2"/>
+    <arg name="marker_id" doc="The ID of the ArUco marker used" value="582"/>
+
+    <node name="reset_robot_pose" pkg="robot_sim" type="reset_robot_pose" />
+
+    <!-- start ArUco -->
+    <node name="aruco_tracker" pkg="aruco_ros" type="single">
+        <remap from="/camera_info" to="/camera/rgb/camera_info" />
+        <remap from="/image" to="/camera/rgb/image_raw" />
+        <param name="image_is_rectified" value="true"/>
+        <param name="marker_size" value="$(arg marker_size)"/>
+        <param name="marker_id" value="$(arg marker_id)"/>
+        <param name="reference_frame" value="camera_rgb_optical_frame"/>
+        <param name="camera_frame" value="camera_rgb_optical_frame"/>
+        <param name="marker_frame" value="camera_marker" />
+    </node>
+
+    <node name="rqt_imview" pkg="rqt_image_view" type="rqt_image_view" args="/aruco_tracker/result" />
+
+    <arg name="debug" default="false" />
+    <arg unless="$(arg debug)" name="launch_prefix" value="" />
+    <arg if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+
+    <!-- start the calibration publish-->
+    <include file="$(find easy_handeye)/launch/publish.launch" />
+
+    <node name="aruco" pkg="gazebo_ros" type="spawn_model" args="-file $(find robot_sim)/hand_eye_calibration/urdf/model.sdf -sdf -model aruco -x -0.1 -y 0.7 -z 0.97" />
+    <node name="table" pkg="gazebo_ros" type="spawn_model" args="-file /home/suyixiu/.gazebo/models/table_marble/model.sdf -sdf -model table -x 0.0 -y 1.2 -z 0.0" />
+
+
+</launch>

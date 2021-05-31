@@ -1,0 +1,4 @@
+controller_list:
+  - name: fake_gripper_controller
+    joints:
+      - gripper_finger1_joint

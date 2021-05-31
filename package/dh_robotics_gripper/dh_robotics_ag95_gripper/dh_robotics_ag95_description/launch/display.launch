@@ -1,0 +1,8 @@
+<launch>
+  <arg name="gui" default="True" />
+  <include file="$(find dh_robotics_ag95_description)/launch/upload_dh_robotics_ag95_gripper.launch"/>
+  <param name="use_gui" value="$(arg gui)"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find dh_robotics_ag95_description)/urdf.rviz" required="true" />
+</launch>

@@ -1,0 +1,33 @@
+<robot name="dropbox">
+  <link name="dropbox_link">
+
+    <inertial>
+      <origin xyz="0.008419 0.000166 0.084099" rpy="0 0 0" />
+      <mass value="1" />
+      <!-- <inertia ixx="3.5873e-05" ixy="1.5e-8" ixz="-6.393e-6" iyy="3.8443e-5" iyz="1.5e-8" izz="5.457e-6" /> -->
+      <inertia ixx="0.035208" ixy="0.000000" ixz="0.000000" iyy="0.018542" iyz="0.000000" izz="0.043333" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://robot_sim/grasp/urdf/meshes/dropbox.dae" />
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://robot_sim/grasp/urdf/meshes/dropbox.dae" />
+      </geometry>
+    </collision>
+
+  </link>
+
+  <gazebo reference="dropbox_link">
+    <material>Gazebo/SkyBlue</material>
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+  </gazebo>
+
+</robot>

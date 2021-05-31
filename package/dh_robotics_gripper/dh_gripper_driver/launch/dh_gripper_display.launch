@@ -1,0 +1,28 @@
+<!-- Launch file for Segway platform startup -->
+<launch>
+    <arg name="GripperID" default="1"/>
+    <arg name="GripperModel" default="AG95_MB"/>
+    <arg name="Connectport" default="/dev/ttyUSB0"/>
+    <arg name="Baudrate" default="115200"/>
+
+    <node pkg="dh_gripper_driver" type="dh_gripper_driver" name="dh_gripper_driver" respawn="true" output="screen">
+        <param name="Gripper_ID" type="string" value="$(arg GripperID)" />
+        <param name="Gripper_Model" type="string" value="$(arg GripperModel)" />
+        <param name="Connect_port" type="string" value="$(arg Connectport)" />
+        <param name="BaudRate"  type="string" value="$(arg Baudrate)" />
+    </node>
+
+  <include file="$(find dh_robotics_ag95_description)/launch/upload_dh_robotics_ag95_gripper.launch"/>
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" >
+        <param name="robot_description" value="robot_description"/>
+        <param name="publish_frequency" type="double" value="100.0" />
+    </node>
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+        <rosparam param="source_list">[/gripper/joint_states]</rosparam>
+    </node>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find dh_robotics_ag95_description)/urdf.rviz" required="true" />
+
+</launch>
+

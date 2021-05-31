@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="ur10">
+
+  <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+
+  <!-- common stuff -->
+  <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
+
+  <!-- ur10 -->
+  <xacro:include filename="$(find yixiuge_ur10_moveit_config)/urdf/yixiuge_ur10_description.xacro" />
+
+  <!-- arm -->
+  <xacro:ur10_robot prefix="" joint_limited="false" transmission_hw_interface="$(arg transmission_hw_interface)"/>
+
+  <!-- gripper -->
+  <xacro:include filename="$(find dh_robotics_ag95_description)/urdf/dh_robotics_ag95_gripper.urdf.xacro" />
+
+
+  <link name="world" />
+
+  <joint name="world_joint" type="fixed">
+    <parent link="world" />
+    <child link = "table_link" />
+    <origin xyz="0.0 0.0 0.6" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  <!-- gripper -->
+  <xacro:dh_robotics_ag95_gripper prefix="" parent="ee_link">
+    <origin xyz="0.008 0 0.0" rpy="${-pi / 2.0} 0 ${-pi / 2.0}"/>
+  </xacro:dh_robotics_ag95_gripper>
+
+  <!-- <xacro:robotiq_85_gripper prefix="" parent="ee_link">
+    <origin xyz="0.008 0 0" rpy="0 0 0"/>
+  </xacro:robotiq_85_gripper> -->
+
+  <!-- camera_holder -->
+  <link name="camera_holder_link">
+    <inertial>
+      <origin xyz="0.0 -0.356106 0.0" rpy="0 0 0" />
+      <mass value="0.01" />
+      <inertia ixx="1.0138e-05" ixy="0.0" ixz="0.0" iyy="7.8e-7" iyz="0.0" izz="1.0871e-5" />
+    </inertial>
+
+    <visual>
+      <origin xyz=" 0 0 0 " rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://yixiuge_ur10_moveit_config/urdf/meshes/cameraholder.dae" />
+      </geometry>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://yixiuge_ur10_moveit_config/urdf/meshes/cameraholder.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="camera_jiazi_joint" type="fixed">
+    <origin xyz="0 0 0.004" rpy="0 0 0" />
+    <parent link="tool0"/>
+    <child link="camera_holder_link"/>
+  </joint>
+
+  <!-- camera_holder2 -->
+  <link name="camera_holder2_link">
+    <visual>
+      <geometry>
+        <box size="0.006 0.02 0.085"/>
+      </geometry>
+      <material name="LightGrey">
+        <color rgba="0.7 0.7 0.7 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.006 0.02 0.085"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+    </inertial>
+  </link>
+
+  <joint name="camera_jiazi_joint2" type="fixed">
+    <origin xyz="0.0 -0.128 0.007" rpy="0 ${pi / 2} 0" />
+    <parent link="camera_holder_link"/>
+    <child link="camera_holder2_link"/>
+  </joint>
+
+  <!-- d435i -->
+  <!-- <xacro:arg name="use_nominal_extrinsics" default="false" />
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435i.urdf.xacro"/>
+
+  <xacro:sensor_d435i parent="camera_holder2_link" use_nominal_extrinsics="$(arg use_nominal_extrinsics)">
+    <origin xyz="-0.013 0.0125 0" rpy="${-pi/2} 0 ${-pi}"/>
+  </xacro:sensor_d435i> -->
+
+
+  <!-- camera -->
+  <!-- <xacro:include filename="$(find yixiuge_ur)/urdf/camera.xacro" /> -->
+  <!-- kinect -->
+  <xacro:include filename="$(find robot_sim)/camera_calibration/urdf/yixiuge_d435i.xacro" />
+  <xacro:yixiuge_d435i />
+  <joint name="yixiuge_kinect_base_joint" type="fixed">
+    <origin xyz="-0.028 0.0 0" rpy="${-pi/2} 0 ${-pi}" />
+    <parent link="camera_holder2_link"/>
+    <child link="camera_base_link"/>
+  </joint>
+
+
+  <!-- yixiuge_ee_link -->
+  <link name="yixiuge_ee_link" />
+
+  <joint name="yixiuge_eelink_joint" type="fixed">
+    <origin xyz="0 0 0.1715" rpy="${pi} 0 0" />
+    <parent link="tool0"/>
+    <child link="yixiuge_ee_link"/>
+  </joint>
+
+  <!-- <xacro:include filename="$(find yixiuge_ur)/urdf/gzplugin_grasp_fix.urdf.xacro"/>
+  <xacro:gzplugin_grasp_fix/> -->
+
+</robot>

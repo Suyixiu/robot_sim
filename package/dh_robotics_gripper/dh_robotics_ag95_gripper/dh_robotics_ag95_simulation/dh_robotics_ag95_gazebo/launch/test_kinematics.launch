@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="dh_robotics_ag95_gazebo" type="dh_robotics_ag95_moveit_test.py" name="dh_robotics_ag95_moveit_test_node"/>
+</launch>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="d435i">
+
+  <link name="world" />
+
+  <xacro:include filename="$(find robot_sim)/camera_calibration/urdf/yixiuge_d435i.xacro" />
+  <xacro:yixiuge_d435i />
+
+  <joint name="yixiuge_d435i_base_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 ${pi / 2.0} ${pi / 2.0}" />
+    <parent link="world"/>
+    <child link="camera_base_link"/>
+  </joint>
+
+</robot>

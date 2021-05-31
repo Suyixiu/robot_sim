@@ -1,0 +1,35 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/suyixiu/catkin_ws/devel/include/**",
+        "/opt/ros/kinetic/include/**",
+        "/home/suyixiu/catkin_ws/src/aruco_ros/aruco/include/**",
+        "/home/suyixiu/catkin_ws/src/aruco_ros/aruco_ros/include/**",
+        "/home/suyixiu/catkin_ws/src/dh_gripper/src/dh_gripper_driver/include/**",
+        "/home/suyixiu/catkin_ws/src/dh_gripper_ros/include/**",
+        "/home/suyixiu/catkin_ws/src/gazebo-pkgs/gazebo_grasp_plugin/include/**",
+        "/home/suyixiu/catkin_ws/src/gazebo_ros_pkgs/gazebo_ros/include/**",
+        "/home/suyixiu/catkin_ws/src/gazebo-pkgs/gazebo_state_plugins/include/**",
+        "/home/suyixiu/catkin_ws/src/gazebo-pkgs/gazebo_test_tools/include/**",
+        "/home/suyixiu/catkin_ws/src/gazebo-pkgs/gazebo_version_helpers/include/**",
+        "/home/suyixiu/catkin_ws/src/gazebo-pkgs/gazebo_world_plugin_loader/include/**",
+        "/home/suyixiu/catkin_ws/src/gpd_ros/include/**",
+        "/home/suyixiu/catkin_ws/src/iai_kinect2/kinect2_bridge/include/**",
+        "/home/suyixiu/catkin_ws/src/iai_kinect2/kinect2_calibration/include/**",
+        "/home/suyixiu/catkin_ws/src/iai_kinect2/kinect2_registration/include/**",
+        "/home/suyixiu/catkin_ws/src/general-message-pkgs/object_msgs_tools/include/**",
+        "/home/suyixiu/catkin_ws/src/realsense-ros/realsense2_camera/include/**",
+        "/home/suyixiu/catkin_ws/src/dh_gripper/src/dh_robotics_ag95_gripper/dh_robotics_ag95_simulation/roboticsgroup_gazebo_plugins/include/**",
+        "/home/suyixiu/catkin_ws/src/universal_robot/ur_kinematics/include/**",
+        "/home/suyixiu/catkin_ws/src/universal_robot/ur_modern_driver/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ]
+}

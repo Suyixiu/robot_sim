@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.4">
+   <model name="aruco">
+      <static>1</static>
+      <link name="link">
+         <inertial>
+            <inertia>
+               <ixx>0.004800083</ixx>
+               <ixy>0</ixy>
+               <ixz>0</ixz>
+               <iyy>0.00480083</iyy>
+               <iyz>0</iyz>
+               <izz>0.0096</izz>
+            </inertia>
+            <mass>1.0</mass>
+         </inertial>
+         <collision name="collision">
+            <geometry>
+               <box>
+                  <size>0.24 0.24 0.001</size>
+               </box>
+               <!-- <plane>
+                  <normal>0 0 1</normal>
+                  <size>0.1 0.1</size>
+               </plane> -->
+            </geometry>
+            <surface>
+               <friction>
+                  <ode>
+                     <mu>100</mu>
+                     <mu2>50</mu2>
+                  </ode>
+               </friction>
+            </surface>
+         </collision>
+         <visual name="visual">
+            <cast_shadows>false</cast_shadows>
+            <geometry>
+               <box>
+                  <size>0.24 0.24 0.001</size>
+               </box>
+               <!-- <plane>
+                  <normal>0 0 1</normal>
+                  <size>0.1 0.1</size>
+               </plane> -->
+            </geometry>
+            <material>
+               <script>
+                  <uri>model://aruco/materials/scripts</uri>
+                  <uri>model://aruco/materials/textures/</uri>
+                  <name>aruco/Image</name>
+               </script>
+            </material>
+         </visual>
+      </link>
+   </model>
+</sdf>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>dh_robotics_ag95_gazebo</name>
+  <version>1.0.0</version>
+  <description>
+      Gazebo wrapper for the DH-robotics ag95 gripper.
+  </description>
+
+  <maintainer email="renjie.ding@dh-robotics.com">Shelling Ding</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">https://github.com/DH-Robotics</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>gazebo_ros_pkgs</run_depend>
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>ros_controllers</run_depend>
+  <run_depend>joint_state_controller</run_depend>
+  <run_depend>joint_trajectory_controller</run_depend>
+  <run_depend>effort_controllers</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  
+
+  <export>
+  </export>
+</package>

@@ -1,0 +1,16 @@
+<launch>
+  <arg name="sim" default="false" />
+  <arg name="debug" default="false" />
+  <!-- By default, we do not start a database (it can be large) -->
+  <arg name="demo" default="false" />
+  
+  <!-- Launch moveit -->
+  <include file="$(find dh_robotics_ag95_moveit_config)/launch/move_group.launch">
+    <arg name="debug" default="$(arg debug)" />
+  </include>
+  
+  
+  <!-- If database loading was enabled, start mongodb as well -->
+  <include file="$(find dh_robotics_ag95_moveit_config)/launch/default_warehouse_db.launch" if="$(arg demo)"/>
+  
+</launch>

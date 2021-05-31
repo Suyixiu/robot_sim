@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+
+<robot name="dh_robotics_ag95_gripper" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:include filename="$(find dh_robotics_ag95_description)/urdf/dh_robotics_ag95_gripper.urdf.xacro" />
+    
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"> 
+            <robotNamespace>/</robotNamespace>
+            <legacyModeNS>true</legacyModeNS>
+        </plugin> 
+    </gazebo>
+    
+    <link name="world"/>
+    <joint name="world_fixed" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="world"/>
+        <child link="gripper_root_link"/>
+    </joint>
+
+    <link name="gripper_root_link">
+        <visual>
+            <origin xyz="0 0 0.5" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.1 0.1 1.0"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0.5" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.1 0.1 1.0"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="1e2" />
+            <origin xyz="0.0 0.0 0.0" />
+            <inertia ixx = "0.000001" ixy = "0.000000" ixz = "0.000000"
+                     iyx = "0.000000" iyy = "0.000001" iyz = "0.000000"
+                     izx = "0.000000" izy = "0.000000" izz = "0.000001" />
+        </inertial>
+    </link>
+    
+    <xacro:dh_robotics_ag95_gripper prefix="" parent="gripper_root_link" >
+        <origin xyz="0.05 0 0.85" rpy="${pi/2}  0 ${pi/2}"/>
+    </xacro:dh_robotics_ag95_gripper>
+    
+</robot>

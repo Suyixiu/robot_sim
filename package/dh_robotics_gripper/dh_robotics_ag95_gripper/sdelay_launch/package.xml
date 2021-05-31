@@ -1,0 +1,17 @@
+<package>
+    <name>sdelay_launch</name>
+    <version>0.0.1</version>
+    <description>System launch file and environment hooks for various utilities</description>
+    
+    <maintainer email="Renjie.ding@dh-robotics.com">Shelling Ding</maintainer>
+    <author>Shelling Ding</author>
+    <url type="repository">https://github.com/DH-Robotics</url>
+    <license>BSD</license>
+    
+    <buildtool_depend>catkin</buildtool_depend>
+    
+    <build_depend>roslaunch</build_depend>
+
+	<export>
+	</export>
+</package>

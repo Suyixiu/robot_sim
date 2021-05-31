@@ -1,0 +1,42 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/suyixiu/catkin_ws/devel/include/**",
+        "/opt/ros/kinetic/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/arm7dof/arm7dof_fk_ik/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/arm7dof/arm7dof_traj_as/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/arm_motion_interface/include/**",
+        "/home/suyixiu/catkin_ws/src/aruco_ros/aruco/include/**",
+        "/home/suyixiu/catkin_ws/src/aruco_ros/aruco_ros/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/cartesian_motion_commander/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_1/creating_a_ros_library/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_4/example_nav_plugin/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/fk_ik_virtual/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/generic_cartesian_planner/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/irb120/irb120_fk_ik/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/joint_space_planner/include/**",
+        "/home/suyixiu/catkin_ws/src/iai_kinect2/kinect2_bridge/include/**",
+        "/home/suyixiu/catkin_ws/src/iai_kinect2/kinect2_calibration/include/**",
+        "/home/suyixiu/catkin_ws/src/iai_kinect2/kinect2_registration/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/object_manipulation_properties/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_4/odom_tf/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_3/pcl_utils/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/rrbot/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_4/test_plugin/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_4/traj_builder/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_5/ur10_robot/ur_fk_ik/include/**",
+        "/home/suyixiu/catkin_ws/src/universal_robot/ur_kinematics/include/**",
+        "/home/suyixiu/catkin_ws/src/ur_modern_driver/include/**",
+        "/home/suyixiu/catkin_ws/src/vision_visp/visp_bridge/include/**",
+        "/home/suyixiu/catkin_ws/src/learning_ros/Part_2/xform_utils/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ]
+}

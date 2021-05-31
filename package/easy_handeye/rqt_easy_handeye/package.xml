@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>rqt_easy_handeye</name>
+    <version>0.2.0</version>
+    <description>rqt GUI for interactive easy_handeye package</description>
+
+    <maintainer email="marco.esposito@tum.de">Marco Esposito</maintainer>
+
+    <license>LGPLv3</license>
+
+    <author email="marco.esposito@tum.de">Marco Esposito</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <exec_depend>rospy</exec_depend>
+    <exec_depend>rqt_gui</exec_depend>
+    <exec_depend>rqt_gui_py</exec_depend>
+    <exec_depend>moveit_commander</exec_depend>
+    <exec_depend>easy_handeye</exec_depend>
+
+    <export>
+        <rqt_gui plugin="${prefix}/plugin.xml"/>
+    </export>
+</package>

@@ -1,0 +1,22 @@
+<!-- Launch file for Segway platform startup -->
+
+<launch>
+    <arg name="GripperID" default="1"/>
+    <arg name="GripperModel" default="PGE"/>
+    <arg name="Connectport" default="/dev/ttyUSB0"/>
+    <arg name="Baudrate" default="115200"/>
+
+    <arg name="test_run" default="true"/>
+
+    <node pkg="dh_gripper_driver" type="dh_gripper_driver" name="dh_gripper_driver" respawn="true" output="screen">
+        <param name="Gripper_ID" type="string" value="$(arg GripperID)" />
+        <param name="Gripper_Model" type="string" value="$(arg GripperModel)" />
+        <param name="Connect_port" type="string" value="$(arg Connectport)" />
+        <param name="BaudRate"  type="string" value="$(arg Baudrate)" />
+    </node>
+
+    <node pkg="dh_gripper_driver" type="dh_gripper_driver_test" name="dh_gripper_driver_test" output="screen" if="$(arg test_run)">
+        <param name="Gripper_Model" type="string" value="$(arg GripperModel)" />
+    </node>
+
+</launch>
