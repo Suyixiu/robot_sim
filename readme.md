@@ -25,17 +25,13 @@
 roslaunch robot_sim camera_calibration.launch
 ```
 之后便可以看到RealSense D435i RGBD相机与标定板，其中这里使用的是7x6内角点，块块大小0.01m的标定板。若想使用其他尺寸的标定板可更改`experiment/camera_calibration/urdf/create_chessboard.py`脚本中的标定板参数后运行以在`experiment/camera_calibration/urdf`目录下生成你所需要的标定板，随后修改`camera_calibration.launch`要load的标定板即可。
-<img src="https://z3.ax1x.com/2021/06/01/2uCb9A.jpg" width = "600" />  
-<!-- <center><img src="https://z3.ax1x.com/2021/06/01/2uCb9A.jpg" width = "700" /></center>   -->
+<!-- <img src="https://z3.ax1x.com/2021/06/01/2uCb9A.jpg" width = "600" />   -->
+<center><img src="https://z3.ax1x.com/2021/06/01/2uCb9A.jpg" width = "700" /></center>  
 
-其中相机的URDF文件中使用的相机插件设置的相机视角是$57\degree$，图像分辨率是1280x720，所以根据相机内参各个参数的的定义算出该相机模型的内参真实值。这个计算与`camera_info`这个topic中的信息一致。
-$$
-\begin{aligned}
-f_x=f_y&=\frac{image\_width / 2}{tan(fov / 2)} = \frac{1280 / 2}{tan(57 / 2)} = 1178.73\\
-c_x &= image\_width / 2 = 1280 / 2 = 640\\
-c_y &= image\_height / 2 = 720 / 2 =360
-\end{aligned}
-$$
+其中相机的URDF文件中使用的相机插件设置的相机视角是$57\degree$，图像分辨率是1280x720，所以根据相机内参各个参数的的定义算出该相机模型的内参真实值。这个计算与`camera_info`这个topic中的信息一致。  
+<p align="center">
+<img src="https://latex.codecogs.com/gif.latex?\dpi{120}&space;\begin{aligned}&space;f_x=f_y&=\frac{image\_width&space;/&space;2}{tan(fov&space;/&space;2)}&space;=&space;\frac{1280&space;/&space;2}{tan(57&space;/&space;2)}&space;=&space;1178.73\\&space;c_x&space;&=&space;image\_width&space;/&space;2&space;=&space;1280&space;/&space;2&space;=&space;640\\&space;c_y&space;&=&space;image\_height&space;/&space;2&space;=&space;720&space;/&space;2&space;=360&space;\end{aligned}" title="\begin{aligned} f_x=f_y&=\frac{image\_width / 2}{tan(fov / 2)} = \frac{1280 / 2}{tan(57 / 2)} = 1178.73\\ c_x &= image\_width / 2 = 1280 / 2 = 640\\ c_y &= image\_height / 2 = 720 / 2 =360 \end{aligned}" />
+</p>  
 
 此时相机已以30帧往外发布图像信息。可以使用ROS自带的标定包来进行实时的标定，也可以把图片保存下来后用相机标定工具如Matlab中的相机标定包进行内参的计算。这里以ROS功能包camera_calibration中的`cameracalibrator.py`脚本为例。你可以选择你所需要标定的相机。
 ```
