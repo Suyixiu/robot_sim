@@ -29,13 +29,14 @@ roslaunch robot_sim camera_calibration.launch
 <!-- <center><img src="https://z3.ax1x.com/2021/06/01/2uCb9A.jpg" width = "700" /></center>   -->
 
 其中相机的URDF文件中使用的相机插件设置的相机视角是$57\degree$，图像分辨率是1280x720，所以根据相机内参各个参数的的定义算出该相机模型的内参真实值。这个计算与`camera_info`这个topic中的信息一致。
-```math
+$$
 \begin{aligned}
 f_x=f_y&=\frac{image\_width / 2}{tan(fov / 2)} = \frac{1280 / 2}{tan(57 / 2)} = 1178.73\\
 c_x &= image\_width / 2 = 1280 / 2 = 640\\
 c_y &= image\_height / 2 = 720 / 2 =360
 \end{aligned}
-```  
+$$
+
 此时相机已以30帧往外发布图像信息。可以使用ROS自带的标定包来进行实时的标定，也可以把图片保存下来后用相机标定工具如Matlab中的相机标定包进行内参的计算。这里以ROS功能包camera_calibration中的`cameracalibrator.py`脚本为例。你可以选择你所需要标定的相机。
 ```
 rosrun camera_calibration cameracalibrator.py --size 7x6 --square 0.01 image:=/camera/rgb/image_raw camera:=/camera/rgb     #RGB相机
