@@ -1,6 +1,6 @@
 # A ROS based Open Source Simulation Environment for Robotics Beginners
 基于ROS搭建的机器人仿真环境。其中设计了机器人研究过程中需要预先进行的几个重要实验如各种标定(相机标定，深度图配准，手眼标定)，还在仿真环境中实现了两种抓取算法的仿真，一种是传统方法(几何方法)一种是机器学习的方法(GPD)，最后一个实验是模拟机械臂采集数据的场景。  
-视频链接-->[Bilibili](https://www.bilibili.com/video/BV19f4y1h73E)  
+视频链接-->[Bilibili](https://www.bilibili.com/video/BV19f4y1h73E)&[YouTube](https://youtu.be/Ky5vFTKUd1w)  
 
 | Author | 苏一休            |
 | ------ | ----------------- |
@@ -25,10 +25,10 @@
 roslaunch robot_sim camera_calibration.launch
 ```
 之后便可以看到RealSense D435i RGBD相机与标定板，其中这里使用的是7x6内角点，块块大小0.01m的标定板。若想使用其他尺寸的标定板可更改`experiment/camera_calibration/urdf/create_chessboard.py`脚本中的标定板参数后运行以在`experiment/camera_calibration/urdf`目录下生成你所需要的标定板，随后修改`camera_calibration.launch`要load的标定板即可。
-<!-- <img src="https://z3.ax1x.com/2021/06/01/2uCb9A.jpg" width = "600" />   -->
-<center><img src="https://z3.ax1x.com/2021/06/01/2uCb9A.jpg" width = "700" /></center>  
+<img src="https://z3.ax1x.com/2021/06/01/2uCb9A.jpg" width = "600" />  
+<!-- <center><img src="https://z3.ax1x.com/2021/06/01/2uCb9A.jpg" width = "700" /></center>   -->
 
-其中相机的URDF文件中使用的相机插件设置的相机视角是57度，图像分辨率是1280x720，所以根据相机内参各个参数的的定义算出该相机模型的内参真实值。这个计算与`camera_info`这个topic中的信息一致。  
+其中相机的URDF文件中使用的相机插件设置的相机视角是57°，图像分辨率是1280x720，所以根据相机内参各个参数的的定义算出该相机模型的内参真实值。这个计算与`camera_info`这个topic中的信息一致。
 <p align="center">
 <img src="https://latex.codecogs.com/gif.latex?\dpi{120}&space;\begin{aligned}&space;f_x=f_y&=\frac{image\_width&space;/&space;2}{tan(fov&space;/&space;2)}&space;=&space;\frac{1280&space;/&space;2}{tan(57&space;/&space;2)}&space;=&space;1178.73\\&space;c_x&space;&=&space;image\_width&space;/&space;2&space;=&space;1280&space;/&space;2&space;=&space;640\\&space;c_y&space;&=&space;image\_height&space;/&space;2&space;=&space;720&space;/&space;2&space;=360&space;\end{aligned}" title="\begin{aligned} f_x=f_y&=\frac{image\_width / 2}{tan(fov / 2)} = \frac{1280 / 2}{tan(57 / 2)} = 1178.73\\ c_x &= image\_width / 2 = 1280 / 2 = 640\\ c_y &= image\_height / 2 = 720 / 2 =360 \end{aligned}" />
 </p>  
@@ -49,8 +49,18 @@ rosrun robot_sim camera_calibration
 python3 camera_calibration.py
 ```
 
-## ## 在仿真环境中进行深度图配准
-此实验将用到实验一中采集的两个相机拍摄的标定板的图片
+## 在仿真环境中进行深度图配准
+此实验将用到实验一中采集的两个相机拍摄的标定板的图片，这里我们提供了一个python脚本`depth_image_registration.py`来计算配准矩阵并将其前两行存放在`Registration matrix.txt`中，因为实际remap深度图的时候也只会用到前两行。
+```
+python3 depth_image_registration.py
+```
+随后可以随便拿一对RGB图与深度图来观察配准矩阵对不对，因为后面会用到这个矩阵所以这里直接就是写成CPP了。
+```
+g++ ./depth_image_registration.cpp -o depth_image_registration $(pkg-config --cflags --libs opencv)
+./depth_image_registration
+```
+下面是配准前与配准后的区别。  
+<img src="https://z3.ax1x.com/2021/06/01/2Km3OH.png" width = "800" />  
 
 ## 实验三：hand_eye_calibration
 ```
