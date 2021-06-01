@@ -17,7 +17,22 @@
 * [在仿真环境中进行数据采集](#在仿真环境中进行数据采集)  
 * [总结](#总结)
 
-## 搭建
+## 搭建  
+此功能包在**Ubuntu16.04**上经过测试，应该适用于其他Linux版本。在你的Catkin工作空间中需要有
+* 负责计算aruco二维码位姿态的[aruco_ros](https://github.com/pal-robotics/aruco_ros/tree/kinetic-devel)；
+* 使用点云的基于深度学习的抓取位姿检测[gpd_ros](https://github.com/atenpas/gpd_ros/)(这个包还需要编译安装[GPD library](https://github.com/atenpas/gpd))；
+* 手眼标定功能包[easy_handeye](https://github.com/IFL-CAMP/easy_handeye)；
+* UR机械臂的ROS功能包[universal_robot](https://github.com/ros-industrial/universal_robot/tree/kinetic-devel)；
+* 此外在`robot_sim/package`中有一些需要用到的但我在上面进行过一些修改的包，如解决gazebo中抓取物体会莫名抖动的包[gazebo-pkgs](https://github.com/JenniferBuehler/gazebo-pkgs)，大寰机器人二指抓手AG-95的ROS功能包[dh_gripper_ros](https://github.com/DH-Robotics/dh_gripper_ros)以及其他依赖等。
+* 非常感谢以上作者的无私奉献。
+  
+以下是如何安装和搭建本ROS功能包
+
+```
+cd ~/catkin_ws/src
+git clone -b kinetic-devel https://github.com/pal-robotics/aruco_ros    #aruco_ros
+git clone https://github.com/atenpas/gpd_ros/                           #gpd_ros
+```
 
 ## 在仿真环境中进行相机标定
 首先是将相机模型还有标定板模型load进来
@@ -63,10 +78,11 @@ g++ ./depth_image_registration.cpp -o depth_image_registration $(pkg-config --cf
 <img src="https://z3.ax1x.com/2021/06/01/2Km3OH.png" width = "800" />  
 
 ## 实验三：hand_eye_calibration
+这里使用的手眼系统属于眼在手上的情况，即eye in hand，首先将我们提供的机械臂的moveit功能包跑起来，其中加载了UR10机械臂、大寰机器人的AG-95二指抓手
 ```
 roslaunch yixiuge_ur10_moveit_config yixiuge_ur_moveit.launch
 ```
-需要等moveit加载完之后再加载hand_eye
+需要等moveit加载完之后再加载手眼标定包。
 ```
 roslaunch robot_sim hand_eye_calibration.launch
 ```
