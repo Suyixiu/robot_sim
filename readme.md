@@ -30,8 +30,16 @@
 
 ```
 cd ~/catkin_ws/src
-git clone -b kinetic-devel https://github.com/pal-robotics/aruco_ros    #aruco_ros
-git clone https://github.com/atenpas/gpd_ros/                           #gpd_ros
+git clone -b kinetic-devel https://github.com/pal-robotics/aruco_ros                #aruco_ros
+git clone https://github.com/atenpas/gpd_ros/                                       #gpd_ros
+git clone https://github.com/IFL-CAMP/easy_handeye                                  #easy_handeye
+cd easy_handeye
+git reset --hard 64b8b88                                                            #使用的是这个版本
+cd ..
+git clone -b kinetic-devel https://github.com/ros-industrial/universal_robot.git    #universal_robot
+git clone https://github.com/Suyixiu/robot_sim                                      #本功能包
+rosdep install --from-paths src --ignore-src --rosdistro=kinetic                    #安装依赖
+catkin_make
 ```
 
 ## 在仿真环境中进行相机标定
