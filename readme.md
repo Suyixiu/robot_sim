@@ -7,15 +7,17 @@
 | E-mail | 2270678755@qq.com |
 
 ## 目录
-* [搭建](#搭建)
-* [在仿真环境中进行相机标定](#在仿真环境中进行相机标定)
-* [在仿真环境中进行深度图配准](#在仿真环境中进行深度图配准)
-* [在仿真环境中进行手眼标定](#在仿真环境中进行手眼标定)  
-* [在仿真环境中抓取](#在仿真环境中抓取)  
-    * [基于传统方法](#基于传统方法)
-    * [基于机器学习方法](#基于机器学习方法)
-* [在仿真环境中进行数据采集](#在仿真环境中进行数据采集)  
-* [总结](#总结)
+- [A ROS based Open Source Simulation Environment for Robotics Beginners](#a-ros-based-open-source-simulation-environment-for-robotics-beginners)
+  - [目录](#目录)
+  - [搭建](#搭建)
+  - [在仿真环境中进行相机标定](#在仿真环境中进行相机标定)
+  - [在仿真环境中进行深度图配准](#在仿真环境中进行深度图配准)
+  - [在仿真环境中进行手眼标定](#在仿真环境中进行手眼标定)
+  - [在仿真环境中抓取](#在仿真环境中抓取)
+    - [基于几何方法的抓取](#基于几何方法的抓取)
+    - [基于机器学习方法的抓取](#基于机器学习方法的抓取)
+  - [在仿真环境中进行数据采集](#在仿真环境中进行数据采集)
+  - [总结](#总结)
 
 ## 搭建  
 此功能包在**Ubuntu16.04**上经过测试，应该适用于其他Linux版本。在你的Catkin工作空间中需要有
@@ -38,7 +40,6 @@ git reset --hard 64b8b88                                                        
 cd ..
 git clone -b kinetic-devel https://github.com/ros-industrial/universal_robot.git    #universal_robot
 git clone https://github.com/Suyixiu/robot_sim                                      #本功能包
-cd ..
 rosdep install --from-paths src --ignore-src --rosdistro=kinetic                    #安装依赖
 catkin_make
 ```
@@ -86,7 +87,7 @@ g++ ./depth_image_registration.cpp -o depth_image_registration $(pkg-config --cf
 下面是配准前与配准后的区别。  
 <img src="https://z3.ax1x.com/2021/06/01/2Km3OH.png" width = "800" />  
 
-## 实验三：hand_eye_calibration
+## 在仿真环境中进行手眼标定
 这里使用的手眼系统属于眼在手上的情况，即eye in hand，首先将我们提供的机械臂的moveit功能包跑起来，其中加载了UR10机械臂、大寰机器人的AG-95二指抓手
 ```
 roslaunch yixiuge_ur10_moveit_config yixiuge_ur_moveit.launch
@@ -96,7 +97,7 @@ roslaunch yixiuge_ur10_moveit_config yixiuge_ur_moveit.launch
 roslaunch robot_sim hand_eye_calibration.launch
 ```
 
-## 实验四：grasp
+## 在仿真环境中抓取
 这里设计了两种方法的抓取，一种是使用传统的几何方法识别抓取点的抓取，一种是基于机器学习的抓取
 ### 基于几何方法的抓取
 ```
@@ -110,6 +111,8 @@ roslaunch robot_sim GPD_method_grasp.launch
 roslaunch robot_sim gpd_run.launch type:=2 topic:=/cloud_sample
 ```
 
-## 实验五：data_collection
+## 在仿真环境中进行数据采集
 ```
 ```
+
+## 总结
