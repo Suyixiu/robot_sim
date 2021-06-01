@@ -38,6 +38,7 @@ git reset --hard 64b8b88                                                        
 cd ..
 git clone -b kinetic-devel https://github.com/ros-industrial/universal_robot.git    #universal_robot
 git clone https://github.com/Suyixiu/robot_sim                                      #本功能包
+cd ..
 rosdep install --from-paths src --ignore-src --rosdistro=kinetic                    #安装依赖
 catkin_make
 ```
