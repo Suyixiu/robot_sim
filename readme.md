@@ -7,8 +7,6 @@
 | E-mail | 2270678755@qq.com |
 
 ## 目录
-- [A ROS based Open Source Simulation Environment for Robotics Beginners](#a-ros-based-open-source-simulation-environment-for-robotics-beginners)
-  - [目录](#目录)
   - [搭建](#搭建)
   - [在仿真环境中进行相机标定](#在仿真环境中进行相机标定)
   - [在仿真环境中进行深度图配准](#在仿真环境中进行深度图配准)
@@ -47,6 +45,7 @@ catkin_make
 ## 在仿真环境中进行相机标定
 首先是将相机模型还有标定板模型load进来
 ```
+cd ~/your_catkin_ws/
 roslaunch robot_sim camera_calibration.launch
 ```
 之后便可以看到RealSense D435i RGBD相机与标定板，其中这里使用的是7x6内角点，块块大小0.01m的标定板。若想使用其他尺寸的标定板可更改`experiment/camera_calibration/urdf/create_chessboard.py`脚本中的标定板参数后运行以在`experiment/camera_calibration/urdf`目录下生成你所需要的标定板，随后修改`camera_calibration.launch`要load的标定板即可。
@@ -69,18 +68,21 @@ rosrun camera_calibration cameracalibrator.py --size 7x6 --square 0.01 image:=/c
 ```
 rosrun robot_sim camera_calibration
 ```
-这里我们提供了一个python的脚本`camera_calibration.py`用于载入前面保存的图片以计算RGB相机与IR相机的内参并分别保存在`IR_cameraintrinsic_parameters.npz`与`RGB_cameraintrinsic_parameters.npz`中，直接python运行此脚本即可。你也可以自己写程序来计算内参，并与前面公式计算的结果像对比以验证你的标定算法的准确性与误差。
+这里我们提供了一个python的脚本`camera_calibration.py`，位于`robot_sim/experiment/camera_calibration/scripts`，用于载入前面保存的图片以计算RGB相机与IR相机的内参并分别保存在`IR_cameraintrinsic_parameters.npz`与`RGB_cameraintrinsic_parameters.npz`中，直接python运行此脚本即可。你也可以自己写程序来计算内参，并与前面公式计算的结果像对比以验证你的标定算法的准确性与误差。
 ```
+cd ~/your_catkin_ws/src/robot_sim/experiment/camera_calibration/scripts
 python3 camera_calibration.py
 ```
 
 ## 在仿真环境中进行深度图配准
-此实验将用到实验一中采集的两个相机拍摄的标定板的图片，这里我们提供了一个python脚本`depth_image_registration.py`来计算配准矩阵并将其前两行存放在`Registration matrix.txt`中，因为实际remap深度图的时候也只会用到前两行。
+此实验将用到实验一中采集的两个相机拍摄的标定板的图片，这里我们提供了一个python脚本`depth_image_registration.py`来计算配准矩阵并将其前两行存放在`Registration_matrix.txt`中，因为实际remap深度图的时候也只会用到前两行。
 ```
+cd ~/your_catkin_ws/src/robot_sim/experiment/depth_image_registration/scripts
 python3 depth_image_registration.py
 ```
 随后可以随便拿一对RGB图与深度图来观察配准矩阵对不对，因为后面会用到这个矩阵所以这里直接就是写成CPP了。
 ```
+cd ../src
 g++ ./depth_image_registration.cpp -o depth_image_registration $(pkg-config --cflags --libs opencv)
 ./depth_image_registration
 ```
@@ -88,18 +90,50 @@ g++ ./depth_image_registration.cpp -o depth_image_registration $(pkg-config --cf
 <img src="https://z3.ax1x.com/2021/06/01/2Km3OH.png" width = "800" />  
 
 ## 在仿真环境中进行手眼标定
-这里使用的手眼系统属于眼在手上的情况，即eye in hand，首先将我们提供的机械臂的moveit功能包跑起来，其中加载了UR10机械臂、大寰机器人的AG-95二指抓手
+这里使用的手眼系统属于眼在手上的情况，即eye on hand，首先将我们提供的机械臂的moveit功能包跑起来，其中加载了UR10机械臂、大寰机器人的AG-95二指抓手还有D435i RGBD相机安装在UR10机械臂的末端。这里的手的link是`yixiuge_ee_link`，眼的link是相机的RGB光学frame`camera_rgb_optical_frame`。标定用到的Aruco二维码的大小是0.2m，ID是582。
 ```
 roslaunch yixiuge_ur10_moveit_config yixiuge_ur_moveit.launch
 ```
-需要等moveit加载完之后再加载手眼标定包。
+需要等moveit加载完之后再加载手眼标定包，因为大寰的二指抓手开起来有点费时，如果马上开hand_eye_calibration的话可能因为找不到moveit的group而报错。
 ```
 roslaunch robot_sim hand_eye_calibration.launch
 ```
+<img src="https://z3.ax1x.com/2021/06/02/2lpBb6.png" width = "800" />  
+
+之后请参照视频中的操作进行操作最后可以算出手眼矩阵。设计的17个点一般情况下不会全部满足，可以通过RVIZ中的moveit的球拖动机械臂渠道其他位置以采集更多的数据从而使标定结果更加准确，下面是我们采集了37个点之后所计算出来的结果
+```
+translation: 
+  x: -0.0171515439439
+  y: 0.129039200607
+  z: 0.146263405556
+rotation: 
+  x: 0.999995982804
+  y: 0.00268604823595
+  z: 0.000687382040816
+  w: 0.000589089946183
+```
+提供的机器人URDF文件中手眼矩阵的真实值如下，可以看出还是很准确的，误差在3,4毫米这样子。
+```
+translation: 
+  x: -0.0175
+  y: 0.128
+  z: 0.1425
+rotation: 
+  x: 1
+  y: 0
+  z: 0
+  w: 0
+```
+手眼标定完成电机save后数据会保存在`~/.ros/easy_handeye/`的`easy_handeye_eye_on_hand.yaml`中，运行下面的launch文件来观察标定的结果
+```
+roslaunch robot_sim hand_eye_calibration.launch
+```
+<img src="https://z3.ax1x.com/2021/06/02/2lKUR1.png" width = "500" />    
 
 ## 在仿真环境中抓取
-这里设计了两种方法的抓取，一种是使用传统的几何方法识别抓取点的抓取，一种是基于机器学习的抓取
+这里设计了两种方法的抓取，一种是使用传统的几何方法识别抓取点的抓取([参考论文](https://link.springer.com/article/10.1023/A:1008381314159))，一种是基于机器学习的抓取([GPD](https://github.com/atenpas/gpd))
 ### 基于几何方法的抓取
+
 ```
 roslaunch robot_sim geometric_method_grasp.launch 
 rosrun robot_sim geometric_method_grasp
