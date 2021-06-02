@@ -95,7 +95,7 @@ const char Depth_dir[] = "../../camera_calibration/save_checkboard_img/Depth/17.
 
 int main()
 {
-    ifstream in("../scripts/Registration matrix.txt");
+    ifstream in("../scripts/Registration_matrix.txt");
     char *buffer = new char[1024];
     while (!in.eof())
     {

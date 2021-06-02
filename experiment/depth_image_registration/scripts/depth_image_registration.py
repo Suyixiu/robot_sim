@@ -138,10 +138,10 @@ if __name__ == "__main__":
     # print(W)
     print("%f, %f, %f, %f, %f, %f, %f, %f" % (W[0][0], W[0][1], W[0][2], W[0][3], W[1][0], W[1][1], W[1][2], W[1][3]))  # ir2rgb
 
-    file = r'./Registration matrix.txt'  
-    with open(file,"w+") as f:
-        str= ("%f, %f, %f, %f, %f, %f, %f, %f") % (W[0][0], W[0][1], W[0][2], W[0][3], W[1][0], W[1][1], W[1][2], W[1][3])
-        f.write(str.encode())
+    file = r"./Registration_matrix.txt"
+    with open(file, "w+") as f:
+        str = ("%f, %f, %f, %f, %f, %f, %f, %f") % (W[0][0], W[0][1], W[0][2], W[0][3], W[1][0], W[1][1], W[1][2], W[1][3])
+        f.write(str)
 
     # W_inv = np.linalg.inv(W)
     # print("%f, %f, %f, %f, %f, %f, %f, %f" % (W_inv[0][0], W_inv[0][1], W_inv[0][2], W_inv[0][3], W_inv[1][0], W_inv[1][1], W_inv[1][2], W_inv[1][3]))

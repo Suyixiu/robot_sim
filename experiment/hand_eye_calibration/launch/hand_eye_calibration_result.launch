@@ -18,6 +18,11 @@
         <param name="marker_frame" value="camera_marker" />
     </node>
 
+    <arg name="start_rviz" default="true" doc="if true, rviz will be started with the provided config file" />
+    <arg name="rviz_config_file" value="$(find robot_sim)/hand_eye_calibration/rviz/rviz_easy_handeye.config" />
+    
+    <node if="$(arg start_rviz)" name="$(anon rviz)" pkg="rviz" type="rviz" respawn="true" args="-d $(arg rviz_config_file)" output="screen" />
+
     <node name="rqt_imview" pkg="rqt_image_view" type="rqt_image_view" args="/aruco_tracker/result" />
 
     <arg name="debug" default="false" />
@@ -25,10 +30,12 @@
     <arg if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
 
     <!-- start the calibration publish-->
-    <include file="$(find easy_handeye)/launch/publish.launch" />
+    <include file="$(find easy_handeye)/launch/publish.launch">
+        <arg name="eye_on_hand" value="true" />
+    </include>
+
 
     <node name="aruco" pkg="gazebo_ros" type="spawn_model" args="-file $(find robot_sim)/hand_eye_calibration/urdf/model.sdf -sdf -model aruco -x -0.1 -y 0.7 -z 0.97" />
-    <node name="table" pkg="gazebo_ros" type="spawn_model" args="-file /home/suyixiu/.gazebo/models/table_marble/model.sdf -sdf -model table -x 0.0 -y 1.2 -z 0.0" />
-
+    <node name="table" pkg="gazebo_ros" type="spawn_model" args="-file $(find robot_sim)/grasp/urdf/table_marble/model.sdf -sdf -model table -x 0.0 -y 1.2 -z 0.0" />
 
 </launch>
