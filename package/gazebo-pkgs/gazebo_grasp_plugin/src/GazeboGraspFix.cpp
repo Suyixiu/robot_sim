@@ -562,7 +562,7 @@ void GazeboGraspFix::OnUpdate()
     float minAngleDiff = this->forcesAngleTolerance; //120 * M_PI/180;
     if (!CheckGrip(objContInfo.appliedForces, minAngleDiff, 0.3))
     {
-      gzerr << "fuck***********************************************1" << std::endl;
+      // gzerr << "fuck***********************************************1" << std::endl;
       continue;
     }
 
@@ -578,7 +578,7 @@ void GazeboGraspFix::OnUpdate()
     // only need to attach object if the grip count threshold is exceeded
     if (counts <= this->gripCountThreshold)
     {
-      gzerr << "fuck***********************************************2" << std::endl;
+      // gzerr << "fuck***********************************************2" << std::endl;
       continue;
     }
 
@@ -594,7 +594,7 @@ void GazeboGraspFix::OnUpdate()
       // the object is already attached to a gripper, so it does not need to be attached.
       // gzmsg << "GazeboGraspFix has found that object "<<
       //     gripper.attachedObject()<<" is already attached to gripper "<<gripperName;
-      gzerr << "isAttachedToGripper***********************************************fuck" << std::endl;
+      // gzerr << "isAttachedToGripper***********************************************fuck" << std::endl;
       continue;
     }
 

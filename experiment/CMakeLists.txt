@@ -107,4 +107,3 @@ add_executable(data_collection ${data_collection_SrcFiles})
 add_dependencies(data_collection ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(data_collection ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
-

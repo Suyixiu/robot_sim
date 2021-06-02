@@ -1,5 +1,5 @@
 #include <iostream>
-using namespace std;
+#include <fstream> 
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
@@ -7,11 +7,6 @@ using namespace std;
 #include <opencv2/aruco.hpp>
 using namespace cv;
 using namespace std;
-
-// double mat_ir2rgb[] = {1.000070, -0.000001, -0.099105, -29.447156, 0.000109, 1.000041, -0.104798, 0.010875}; //乘上ir的uv索引出rgb的uv
-double mat_ir2rgb[] = {1.000024, -0.000215, 0.008221, -17.652585, 0.000066, 0.999908, 0.345271, -0.007065};
-// double mat_ir2rgb[] = {0.999976, 0.000215, -0.008295, 17.652158, -0.000066, 1.000092, -0.345279, 0.005872};
-
 
 void Depth2RGB(cv::Mat &Depth_img, cv::Mat &dst, const double *W)
 {
@@ -86,8 +81,8 @@ void mouse_callback(int event, int x, int y, int flags, void *mat)
         else
         {
             printf("b=%d\t", img.at<Vec3b>(pt)[0]);
-        printf("g=%d\t", img.at<Vec3b>(pt)[1]);
-        printf("r=%d\n", img.at<Vec3b>(pt)[2]);
+            printf("g=%d\t", img.at<Vec3b>(pt)[1]);
+            printf("r=%d\n", img.at<Vec3b>(pt)[2]);
         }
         circle(img, pt, 2, Scalar(0, 0, 255), 2, 8); //在鼠标点击的地方画个圆
         imshow("show", img);
@@ -95,11 +90,22 @@ void mouse_callback(int event, int x, int y, int flags, void *mat)
     }
 }
 
-const char RGB_dir[] = "/home/suyixiu/catkin_ws/src/robot_sim/experiment/camera_calibration/save_checkboard_img/RGB/17.png";
-const char Depth_dir[] = "/home/suyixiu/catkin_ws/src/robot_sim/experiment/camera_calibration/save_checkboard_img/Depth/17.png";
+const char RGB_dir[] = "../../camera_calibration/save_checkboard_img/RGB/17.png";
+const char Depth_dir[] = "../../camera_calibration/save_checkboard_img/Depth/17.png";
 
 int main()
 {
+    ifstream in("../scripts/Registration matrix.txt");
+    char *buffer = new char[1024];
+    while (!in.eof())
+    {
+        in.read(buffer, 1024);
+    }
+    double mat_ir2rgb[8];
+    sscanf(buffer, "%lf, %lf, %lf, %lf, %lf, %lf, %lf, %lf", mat_ir2rgb, mat_ir2rgb + 1, mat_ir2rgb + 2, mat_ir2rgb + 3, mat_ir2rgb + 4, mat_ir2rgb + 5, mat_ir2rgb + 6, mat_ir2rgb + 7);
+
+    in.close();
+
     Mat RGB_img = imread(RGB_dir, IMREAD_UNCHANGED);
     Mat Depth_img = imread(Depth_dir, IMREAD_UNCHANGED);
     Mat img_8UC1;
@@ -112,7 +118,7 @@ int main()
 
     Mat output(Depth_img.rows, Depth_img.cols, CV_16UC1, cv::Scalar(0)); //初始化配准的深度图
     Depth2RGB(Depth_img, output, mat_ir2rgb);                            //将输入的Depth_img根据转移矩阵配准成output
-    cv::imshow("output", output);                                        //配准后的深度图
+    // cv::imshow("output", output);                                        //配准后的深度图
     // cv::waitKey(0);
     /* 显示配准后的揉在一起的效果 */
     Mat temp;
