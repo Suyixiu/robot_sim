@@ -15,7 +15,6 @@
     - [基于几何方法的抓取](#基于几何方法的抓取)
     - [基于机器学习方法的抓取](#基于机器学习方法的抓取)
   - [在仿真环境中进行数据采集](#在仿真环境中进行数据采集)
-  - [总结](#总结)
 
 ## 搭建  
 此功能包在**Ubuntu16.04**上经过测试，应该适用于其他Linux版本。在你的Catkin工作空间中需要有
@@ -132,21 +131,36 @@ roslaunch robot_sim hand_eye_calibration.launch
 
 ## 在仿真环境中抓取
 这里设计了两种方法的抓取，一种是使用传统的几何方法识别抓取点的抓取([参考论文](https://link.springer.com/article/10.1023/A:1008381314159))，一种是基于机器学习的抓取([GPD](https://github.com/atenpas/gpd))
-### 基于几何方法的抓取
-
+### 基于几何方法的抓取  
+先把机械臂和抓取环境load进来随后启动抓取。
 ```
 roslaunch robot_sim geometric_method_grasp.launch 
 rosrun robot_sim geometric_method_grasp
 ```
+我们这里提供的方法主要原理是先将物体从桌面分割，这里的分割使用的是直接将相机当前画面减去一个mask，然后设置阈值二值化。因为是仿真环境所以这样做还是比较稳定的，分割效果也是没有问题的。但这种超级简单的做法仅限于环境固定的情况，实际使用的话还是建议使用其他分割算法，比如用深度图生成掩模来提取物体。  
+<img src="https://z3.ax1x.com/2021/06/03/283gmR.png" width = "900" />    
+
+分割出物体之后便是滤波然后提取轮廓，膨胀后再腐蚀以连接成闭合的轮廓，随后选择最大的轮廓作为机械臂要抓取的物体。计算轮廓的一阶矩得到物体的重心，这里假设物体的质量分布均匀。随后使用PCA计算轮廓的主方向和垂直主方向的副方向，这里也可使用轮廓的二阶矩来获得。随后计算轮廓的最小外接矩形，与副轴的两个交点连成一条直线，随后遍历这条直线上的点找到副轴与轮廓的两个交点作为抓取点，随后绘制抓取矩形框。详细实现请见代码。
+<img src="https://z3.ax1x.com/2021/06/03/288IU0.png" width = "900" />  
+
 
 ### 基于机器学习方法的抓取
+这里使用的是atenpas的[GPD](https://github.com/atenpas/gpd)这个方法，具体原理可见[论文](https://arxiv.org/abs/1706.09911)，这里不再赘述。在搭建GPD库的时候你可能会遇到某些问题，倘若GPD2.0.0版本出现问题则建议使用GPD1.5.0。这里在我们的仿真环境中成功运行了这一算法。我们提供的代码使用的是GPD的sample方式，使用的是caffe的cfg文件。再运行这部分代码的时候请注意调整cfg文件到正确的路径。此外这里的分割使用的是根据距离风格，而实际更为鲁棒的做法应该是使用RGB图生成掩模来分割点云。
 ```
 roslaunch robot_sim GPD_method_grasp.launch
 roslaunch robot_sim gpd_run.launch type:=2 topic:=/cloud_sample
 ```
+<img src="https://z3.ax1x.com/2021/06/03/28YngS.png" width = "900" />  
+
+### 关于gazebo中抓手抓取物体会莫名抖动
+这是因为抓手的控制是位置控制而不是力控制所造成的。我们是使用JenniferBuehler编写的gazebo插件[gazebo-pkgs](https://github.com/JenniferBuehler/gazebo-pkgs)来解决这个问题的。具体原理是插件会检测手指与物体接触，设定一些阈值当达到条件之后将物体与抓手的相对位置进行固定并失能物体的collision属性从而解决这一抖动的问题。
 
 ## 在仿真环境中进行数据采集
+主要原理是围绕物体生成若干个位姿，随后驱动机械臂运动到指定位姿之后拍照，保存数据
 ```
+roslaunch robot_sim data_collection.launch
+rosrun robot_sim data_collection
 ```
+其中采样点的多少以及位置等都是可以认为调节的，以下是56个的采样点
+<img src="https://z3.ax1x.com/2021/06/03/28Y7PP.png" width = "900" />  
 
-## 总结

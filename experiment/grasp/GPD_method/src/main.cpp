@@ -170,6 +170,46 @@ void reset_obj_pos()
 	}
 }
 
+bool move(float x, float y, float z, float roll, float pitch, float yaw)
+{
+	moveit::planning_interface::MoveGroupInterface group("manipulator"); //ur5对应moveit中选择的规划部分
+
+	geometry_msgs::Pose target_pose; //设置发送的数据，对应于moveit中的拖拽
+	tf::Quaternion Q;
+
+	roll = roll / 180.0 * math_pi;
+	pitch = pitch / 180.0 * math_pi;
+	yaw = yaw / 180.0 * math_pi;
+	Q.setRPY(roll, pitch, yaw);
+	target_pose.orientation.x = Q.getX();
+	target_pose.orientation.y = Q.getY();
+	target_pose.orientation.z = Q.getZ();
+	target_pose.orientation.w = Q.getW();
+
+	target_pose.position.x = x;
+	target_pose.position.y = y;
+	target_pose.position.z = z;
+
+	group.setPoseTarget(target_pose);
+	group.setMaxVelocityScalingFactor(max_velocity);
+	group.setMaxAccelerationScalingFactor(max_acceleration);
+
+	moveit::planning_interface::MoveGroupInterface::Plan my_plan; //进行运动规划，计算机器人移动到目标的运动轨迹，对应moveit中的plan按钮
+	bool success = group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS;
+
+	ROS_INFO("Visualizing plan 1 (pose goal) %s", success ? "" : "FAILED");
+
+	if (success)
+	{
+		group.execute(my_plan); //让机械臂按照规划的轨迹开始运动，对应moveit中的execute。
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 bool move(tf::Transform target_tf)
 {
 	moveit::planning_interface::MoveGroupInterface group("manipulator"); //ur5对应moveit中选择的规划部分
@@ -479,8 +519,11 @@ int main(int argc, char **argv)
 			printf("rosrun tf static_transform_publisher %f  %f  %f  %f  %f  %f %f world wtf 1000\n", world2urPose.getOrigin().x(), world2urPose.getOrigin().y(), world2urPose.getOrigin().z(),
 				   world2urPose.getRotation().getX(), world2urPose.getRotation().getY(), world2urPose.getRotation().getZ(), world2urPose.getRotation().getW());
 
-			/* 去抓 */
 			move(world2urPose);
+			grasp(0.5);
+			go_home();
+			move(-0.465, 0.24, 1.4, 0.0, 0.0, 0.0); //箱子上边
+			grasp(0.8);
 			go_home();
 
 			ros::Duration(0.5).sleep();
