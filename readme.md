@@ -39,6 +39,8 @@ git clone -b kinetic-devel https://github.com/ros-industrial/universal_robot.git
 git clone https://github.com/Suyixiu/robot_sim                                      #本功能包
 rosdep install --from-paths src --ignore-src --rosdistro=kinetic                    #安装依赖
 catkin_make
+
+cp -r ./src/robot_sim/experiment/hand_eye_calibration/urdf/aruco/ ~/.gazebo/models  #复制aruco模型到gazebo默认模型文件夹中
 ```
 
 ## 在仿真环境中进行相机标定
@@ -134,6 +136,7 @@ roslaunch robot_sim hand_eye_calibration.launch
 ### 基于几何方法的抓取  
 先把机械臂和抓取环境load进来随后启动抓取。
 ```
+cd ~/your_catkin_ws/
 roslaunch robot_sim geometric_method_grasp.launch 
 rosrun robot_sim geometric_method_grasp
 ```

@@ -5,8 +5,7 @@
 const string rgb_topic = "/camera/rgb/image_raw";
 const string depth_topic = "/camera/depth/image_raw";
 
-// string RGBmask_dir = "./src/robot_sim/experiment/grasp/img/RGB_mask.png";
-string RGBmask_dir = "/home/suyixiu/catkin_ws/src/robot_sim/experiment/grasp/img/RGB_mask.png";
+string RGBmask_dir = "./src/robot_sim/experiment/grasp/img/RGB_mask.png";
 
 int main(int argc, char **argv)
 {
@@ -53,10 +52,10 @@ int main(int argc, char **argv)
                 save_image_flag = false;
                 static int image_index = 1;
                 char text[20];
-                sprintf(text, "/home/suyixiu/catkin_ws/src/robot_sim/experiment/grasp/img/RGB_%d.png", image_index);
+                sprintf(text, "./src/robot_sim/experiment/grasp/img/RGB_%d.png", image_index);
                 imwrite(text, RGB_img);
                 // sprintf(text, "./src/robot_sim/experiment/grasp/img/Depth_%d.png", image_index);
-                sprintf(text, "/home/suyixiu/catkin_ws/src/robot_sim/experiment/grasp/img/Depth_%d.png", image_index);
+                sprintf(text, "./src/robot_sim/experiment/grasp/img/Depth_%d.png", image_index);
                 imwrite(text, Depth_img);
                 ROS_INFO("save %d done \n", image_index);
                 image_index++;
