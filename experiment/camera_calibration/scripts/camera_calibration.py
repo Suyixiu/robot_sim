@@ -42,7 +42,7 @@ def calibration_photo(photo_path, camera_name):
 			# cv2.imshow('image_corner',image)
 			# cv2.waitKey(5000)
 
-	ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(world_position, image_position, gray.shape[::-1], None, None)  # 计算内参
+	ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(world_position, image_position, (1280, 720), None, None)  # 计算内参
 
 	np.savez("./" +camera_name + "intrinsic_parameters.npz", mtx=mtx, dist=dist)  # 将内参保存起来
 

@@ -127,7 +127,7 @@ rotation:
 ```
 手眼标定完成电机save后数据会保存在`~/.ros/easy_handeye/`的`easy_handeye_eye_on_hand.yaml`中，运行下面的launch文件来观察标定的结果
 ```
-roslaunch robot_sim hand_eye_calibration.launch
+roslaunch robot_sim hand_eye_calibration_result.launch
 ```
 <img src="https://z3.ax1x.com/2021/06/02/2lKUR1.png" width = "500" />    
 
