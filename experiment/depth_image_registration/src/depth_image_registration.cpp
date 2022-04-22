@@ -1,11 +1,10 @@
 #include <iostream>
-#include <fstream> 
+#include <fstream>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/aruco.hpp>
-using namespace cv;
 using namespace std;
 
 void Depth2RGB(cv::Mat &Depth_img, cv::Mat &dst, const double *W)
@@ -68,30 +67,30 @@ void mouse_callback(int event, int x, int y, int flags, void *mat)
 {
     if (event == CV_EVENT_LBUTTONDOWN) //判断是否是鼠标左键按下
     {
-        Mat img = (*(Mat *)mat).clone(); //创建一个img为传入参数的clone 可使得在img上画图不影响原来的图
-        Point pt = Point(x, y);
+        cv::Mat img = (*(cv::Mat *)mat).clone(); //创建一个img为传入参数的clone 可使得在img上画图不影响原来的图
+        cv::Point pt = cv::Point(x, y);
         char text[16];
         sprintf(text, "(%d,%d)", x, y);
-        putText(img, text, pt, CV_FONT_HERSHEY_COMPLEX, 0.5, Scalar(255, 0, 255), 1); //在图片上显示文字
-        printf("x=%d\ty=%d\t", x, y);                                                 //打印各种信息
-        if ((*(Mat *)mat).type() == 2)                                                //如果是深度图则打印深度
+        putText(img, text, pt, CV_FONT_HERSHEY_COMPLEX, 0.5, cv::Scalar(255, 0, 255), 1); //在图片上显示文字
+        printf("x=%d\ty=%d\t", x, y);                                                         //打印各种信息
+        if ((*(cv::Mat *)mat).type() == 2)                                                    //如果是深度图则打印深度
         {
             printf("depth=%lf\n", img.at<uint16_t>(pt) / 65535.0);
         }
         else
         {
-            printf("b=%d\t", img.at<Vec3b>(pt)[0]);
-            printf("g=%d\t", img.at<Vec3b>(pt)[1]);
-            printf("r=%d\n", img.at<Vec3b>(pt)[2]);
+            printf("b=%d\t", img.at<cv::Vec3b>(pt)[0]);
+            printf("g=%d\t", img.at<cv::Vec3b>(pt)[1]);
+            printf("r=%d\n", img.at<cv::Vec3b>(pt)[2]);
         }
-        circle(img, pt, 2, Scalar(0, 0, 255), 2, 8); //在鼠标点击的地方画个圆
-        imshow("show", img);
-        waitKey(1);
+        circle(img, pt, 2, cv::Scalar(0, 0, 255), 2, 8); //在鼠标点击的地方画个圆
+        cv::imshow("show", img);
+        cv::waitKey(1);
     }
 }
 
-const char RGB_dir[] = "../../camera_calibration/save_checkboard_img/RGB/17.png";
-const char Depth_dir[] = "../../camera_calibration/save_checkboard_img/Depth/17.png";
+const char RGB_dir[] = "../../camera_calibration/save_checkboard_img/RGB/1.png";
+const char Depth_dir[] = "../../camera_calibration/save_checkboard_img/Depth/1.png";
 
 int main()
 {
@@ -106,25 +105,25 @@ int main()
 
     in.close();
 
-    Mat RGB_img = imread(RGB_dir, IMREAD_UNCHANGED);
-    Mat Depth_img = imread(Depth_dir, IMREAD_UNCHANGED);
-    Mat img_8UC1;
+    cv::Mat RGB_img = imread(RGB_dir, cv::IMREAD_UNCHANGED);
+    cv::Mat Depth_img = imread(Depth_dir, cv::IMREAD_UNCHANGED);
+    cv::Mat img_8UC1;
     Depth_img.convertTo(img_8UC1, CV_8U, 255.0 / 65535.0, 0.0); //转成8UC1来addWeighted来显示 对应type为0
-    Mat result;
-    Mat Channels[3] = {img_8UC1, img_8UC1, img_8UC1};
+    cv::Mat result;
+    cv::Mat Channels[3] = {img_8UC1, img_8UC1, img_8UC1};
     merge(Channels, 3, result); //merge成3通道的8UC3 对应type为16
     addWeighted(result, 0.5, RGB_img, 0.5, 0.0, result);
     cv::imshow("origin_result", result); //原始的深度图揉进彩色图中
 
-    Mat output(Depth_img.rows, Depth_img.cols, CV_16UC1, cv::Scalar(0)); //初始化配准的深度图
+    cv::Mat output(Depth_img.rows, Depth_img.cols, CV_16UC1, cv::Scalar(0)); //初始化配准的深度图
     Depth2RGB(Depth_img, output, mat_ir2rgb);                            //将输入的Depth_img根据转移矩阵配准成output
     // cv::imshow("output", output);                                        //配准后的深度图
     // cv::waitKey(0);
     /* 显示配准后的揉在一起的效果 */
-    Mat temp;
+    cv::Mat temp;
     output.convertTo(temp, CV_8U, 255.0 / 65535.0, 0.0); //转成8UC1来addWeighted 对应type为0
-    Mat registration_result;
-    Mat new_Channels[3] = {temp, temp, temp};
+    cv::Mat registration_result;
+    cv::Mat new_Channels[3] = {temp, temp, temp};
     merge(new_Channels, 3, registration_result); //merge成3通道的8UC3 对应type为16
     addWeighted(registration_result, 0.5, RGB_img, 0.5, 0.0, registration_result);
     cv::imshow("registration_result", registration_result);

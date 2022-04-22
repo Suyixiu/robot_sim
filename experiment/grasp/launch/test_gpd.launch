@@ -1,0 +1,12 @@
+<launch>
+
+    <arg name="config" default="true" />
+    <arg unless="$(arg config)" name="command_args" value="" />
+    <arg if="$(arg config)" name="command_args" value="-d /home/suyixiu/catkin_ws/src/robot_sim/experiment/grasp/config/test_gpd.rviz" />
+
+    <node name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false" args="$(arg command_args)" output="screen" />
+
+    <node name="test_gpd" pkg="robot_sim" type="test_gpd" output="screen" />
+    <!-- <node name="open_a_file_seg_and_pub_sample" pkg="open_a_file_and_pub_sample" type="test_gpd" output="screen" /> -->
+
+</launch>

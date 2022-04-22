@@ -1,6 +1,50 @@
 #include "control.h"
 #include "debug.h"
-#include "gpd_interface.h"
+#include <pcl/point_cloud.h>
+#include <pcl_conversions/pcl_conversions.h>
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
+#include <image_transport/image_transport.h>
+#include <cv_bridge/cv_bridge.h>
+
+#include "sensor_msgs/Image.h"
+
+#include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
+#include <geometry_msgs/Twist.h>
+
+class TransformSender
+{
+public:
+	ros::NodeHandle node_;
+	TransformSender(double x, double y, double z, double yaw, double pitch, double roll, ros::Time time, const std::string &frame_id, const std::string &child_frame_id)
+	{
+		tf::Quaternion q;
+		q.setRPY(roll, pitch, yaw);
+		transform_ = tf::StampedTransform(tf::Transform(q, tf::Vector3(x, y, z)), time, frame_id, child_frame_id);
+	};
+	TransformSender(double x, double y, double z, double qx, double qy, double qz, double qw, ros::Time time, const std::string &frame_id, const std::string &child_frame_id) : transform_(tf::Transform(tf::Quaternion(qx, qy, qz, qw), tf::Vector3(x, y, z)), time, frame_id, child_frame_id){};
+	~TransformSender() {}
+
+	tf::TransformBroadcaster broadcaster;
+
+	void send(ros::Time time)
+	{
+		transform_.stamp_ = time;
+		broadcaster.sendTransform(transform_);
+	};
+
+private:
+	tf::StampedTransform transform_;
+};
+
+#define math_pi 3.14159265
+#define max_velocity 2.0
+#define max_acceleration 2.0
 
 #define ball_layer 1
 #define ball_R 0.4
@@ -12,7 +56,7 @@ string rgb_topic = "/camera/rgb/image_raw";
 string depth_topic = "/camera/depth/image_raw";
 string pc_topic = "/camera/depth/points";
 
-Mat RGB_img, Depth_img;
+cv::Mat RGB_img, Depth_img;
 pcl::PointCloud<pcl::PointXYZRGBA> cloud;
 
 bool RGB_update_flag = 0, Depth_update_flag = 0, cloud_update_flag = 0;

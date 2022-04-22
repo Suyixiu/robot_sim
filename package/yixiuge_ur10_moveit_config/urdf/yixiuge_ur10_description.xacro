@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://wiki.ros.org/xacro">
 
   <xacro:include filename="$(find ur_description)/urdf/ur.transmission.xacro" />
-  <xacro:include filename="$(find ur_description)/urdf/ur.gazebo.xacro" />
+  <xacro:include filename="$(find yixiuge_ur10_moveit_config)/urdf/ur.gazebo.xacro" />
 
   <xacro:macro name="cylinder_inertial" params="radius length mass *origin">
     <inertial>
@@ -129,7 +129,7 @@
           <safety_controller soft_lower_limit="${shoulder_pan_lower_limit + safety_pos_margin}" soft_upper_limit="${shoulder_pan_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
         </xacro:if>
       </xacro:if>
-      <dynamics damping="0.0" friction="0.0"/>
+      <dynamics damping="1.0" friction="1.0"/>
     </joint>
 
     <link name="${prefix}shoulder_link">
@@ -169,7 +169,7 @@
           <safety_controller soft_lower_limit="${shoulder_lift_lower_limit + safety_pos_margin}" soft_upper_limit="${shoulder_lift_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
         </xacro:if>
       </xacro:if>
-      <dynamics damping="0.0" friction="0.0"/>
+      <dynamics damping="1.0" friction="1.0"/>
     </joint>
 
     <link name="${prefix}upper_arm_link">
@@ -209,7 +209,7 @@
           <safety_controller soft_lower_limit="${elbow_joint_lower_limit + safety_pos_margin}" soft_upper_limit="${elbow_joint_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
         </xacro:if>
       </xacro:if>
-      <dynamics damping="0.0" friction="0.0"/>
+      <dynamics damping="1.0" friction="1.0"/>
     </joint>
 
     <link name="${prefix}forearm_link">
@@ -249,7 +249,7 @@
           <safety_controller soft_lower_limit="${wrist_1_lower_limit + safety_pos_margin}" soft_upper_limit="${wrist_1_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
         </xacro:if>
       </xacro:if>
-      <dynamics damping="0.0" friction="0.0"/>
+      <dynamics damping="1.0" friction="1.0"/>
     </joint>
 
     <link name="${prefix}wrist_1_link">
@@ -289,7 +289,7 @@
           <safety_controller soft_lower_limit="${wrist_2_lower_limit + safety_pos_margin}" soft_upper_limit="${wrist_2_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
         </xacro:if>
       </xacro:if>
-      <dynamics damping="0.0" friction="0.0"/>
+      <dynamics damping="1.0" friction="1.0"/>
     </joint>
 
     <link name="${prefix}wrist_2_link">
@@ -328,7 +328,7 @@
           <safety_controller soft_lower_limit="${wrist_3_lower_limit + safety_pos_margin}" soft_upper_limit="${wrist_3_upper_limit - safety_pos_margin}" k_position="${safety_k_position}" k_velocity="0.0"/>
         </xacro:if>
       </xacro:if>
-      <dynamics damping="0.0" friction="0.0"/>
+      <dynamics damping="1.0" friction="1.0"/>
     </joint>
 
     <link name="${prefix}wrist_3_link">

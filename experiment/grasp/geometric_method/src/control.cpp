@@ -1,6 +1,9 @@
 #include "control.h"
 
-Point3f home(-0.15, 0.64, 1.5);
+#define math_pi 3.1415926
+
+#define max_velocity 1
+#define max_acceleration 1
 
 /**
 * @brief	控制机械臂的move函数
@@ -56,7 +59,7 @@ bool move(float x, float y, float z, float roll, float pitch, float yaw)
 * @param	target_point:目标点
 * @param	yaw：从上往下看 顺时针从左到右分别是90 0 -90
 */
-bool move(Point3f target_point, float yaw)
+bool move(cv::Point3f target_point, float yaw)
 {
     moveit::planning_interface::MoveGroupInterface group("manipulator"); //ur5对应moveit中选择的规划部分
 

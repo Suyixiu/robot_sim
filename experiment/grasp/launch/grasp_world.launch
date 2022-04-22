@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find yixiuge_ur10_moveit_config)/launch/yixiuge_ur_moveit.launch"/>
+  <include file="$(find yixiuge_ur10_moveit_config)/launch/moveit_rviz.launch" />
+
+  <node name="table" pkg="gazebo_ros" type="spawn_model" args="-file $(find robot_sim)/grasp/urdf/table_marble/model.sdf -sdf -model table -x 0.0 -y 1.13 -z 0.0" />
+  <node name="box" pkg="gazebo_ros" type="spawn_model" args="-file $(find robot_sim)/grasp/urdf/block.sdf -sdf -model box -x -0.13 -y 0.75 -z 1.2 -Y 2.2" />
+  <node name="coke" pkg="gazebo_ros" type="spawn_model" args="-file $(find robot_sim)/grasp/urdf/coke_can/model.sdf -sdf -model coke -x -0.22 -y 0.88 -z 1.1 -R 1.57 -Y -0.3665" />
+  <node name="banana" pkg="gazebo_ros" type="spawn_model" args="-file $(find robot_sim)/grasp/urdf/banana.sdf -sdf -model banana -x -0.1 -y 0.65 -z 1.1 -R 1.57 -Y 2.2" />
+  <node name="dropbox" pkg="gazebo_ros" type="spawn_model" args="-file $(find robot_sim)/grasp/urdf/dropbox.urdf -urdf -model dropbox -x -0.5 -y 0.25 -z 1.1 -Y 1.57" />
+
+  <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure" output="screen"/>
+
+</launch>
+
+

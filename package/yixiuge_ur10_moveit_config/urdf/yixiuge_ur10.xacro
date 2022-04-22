@@ -9,7 +9,7 @@
   <!-- ur10 -->
   <xacro:include filename="$(find yixiuge_ur10_moveit_config)/urdf/yixiuge_ur10_description.xacro" />
 
-  <!-- arm -->
+  <!-- arm transmission -->
   <xacro:ur10_robot prefix="" joint_limited="false" transmission_hw_interface="$(arg transmission_hw_interface)"/>
 
   <!-- gripper -->
@@ -58,6 +58,10 @@
       </geometry>
     </collision>
   </link>
+  <gazebo reference="camera_holder_link">
+    <selfCollide>true</selfCollide>
+    <turnGravityOff>true</turnGravityOff>
+  </gazebo>
 
   <joint name="camera_jiazi_joint" type="fixed">
     <origin xyz="0 0 0.004" rpy="0 0 0" />
@@ -86,6 +90,10 @@
       <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
     </inertial>
   </link>
+  <gazebo reference="camera_holder2_link">
+    <selfCollide>true</selfCollide>
+    <turnGravityOff>true</turnGravityOff>
+  </gazebo>
 
   <joint name="camera_jiazi_joint2" type="fixed">
     <origin xyz="0.0 -0.128 0.007" rpy="0 ${pi / 2} 0" />

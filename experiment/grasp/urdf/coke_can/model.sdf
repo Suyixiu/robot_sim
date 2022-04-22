@@ -24,16 +24,16 @@
         <surface>
           <friction>
             <ode>
-              <mu>0.5</mu>
-              <mu2>0.5</mu2>
+              <mu>0.2</mu>
+              <mu2>0.2</mu2>
             </ode>
           </friction>
           <contact>
             <ode>
-              <kp>10000000.0</kp>
-              <kd>1.0</kd>
-              <!-- <min_depth>0.001</min_depth>
-              <max_vel>0.1</max_vel> -->
+              <kp>1e30</kp>
+              <kd>1e6</kd>
+              <max_vel>0</max_vel>
+              <min_depth>0.001</min_depth>
             </ode>
           </contact>
         </surface>

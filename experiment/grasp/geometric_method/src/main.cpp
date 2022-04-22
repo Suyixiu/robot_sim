@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     grasp(0.8);
     reset_obj_pos();
 
-    Mat RGB_mask = imread(RGBmask_dir, IMREAD_UNCHANGED);
+    cv::Mat RGB_mask = imread(RGBmask_dir, cv::IMREAD_UNCHANGED);
 
     recognize_init(); //创建滑条
 
@@ -45,8 +45,8 @@ int main(int argc, char **argv)
             Depth_update_flag = 0;
             imshow("1 rgb_img", RGB_img);
             imshow("2 depth_img", Depth_img);
-            Point3f target_pos = recognize(RGB_mask);
-            waitKey(1);
+            cv::Point3f target_pos = recognize(RGB_mask);
+            cv::waitKey(1);
             if (save_image_flag)
             {
                 save_image_flag = false;
@@ -54,7 +54,6 @@ int main(int argc, char **argv)
                 char text[20];
                 sprintf(text, "./src/robot_sim/experiment/grasp/img/RGB_%d.png", image_index);
                 imwrite(text, RGB_img);
-                // sprintf(text, "./src/robot_sim/experiment/grasp/img/Depth_%d.png", image_index);
                 sprintf(text, "./src/robot_sim/experiment/grasp/img/Depth_%d.png", image_index);
                 imwrite(text, Depth_img);
                 ROS_INFO("save %d done \n", image_index);
@@ -83,21 +82,11 @@ int main(int argc, char **argv)
                 ROS_INFO("x:%lf\ty:%lf\tz:%lf\tmain_direction:%lf\tgrasp_angle:%lf\tgrasp_distance:%lf\n", target_pos.x, target_pos.y, target_pos.z, main_direction, gripper_angle, grasp_distance);
                 move(target_pos.x, target_pos.y, target_pos.z + 0.1, eelink_roll, eelink_pitch, main_direction);
                 move(target_pos.x, target_pos.y, target_pos.z, eelink_roll, eelink_pitch, main_direction);
-                grasp(gripper_angle);
+                grasp(0.33);
                 go_home();
-                move(-0.465, 0.24, 1.4, 0.0, 0.0, 0.0);  //箱子上边
+                move(-0.465, 0.24, 1.4, 0.0, 0.0, 0.0); //箱子上边
                 grasp(0.8);
                 go_home();
-                // move_obj(obj_name, obj_x, obj_y, obj_z, 0, 0, 0);
-                // ROS_INFO("move_and_grasp done!\n");
-                // ROS_INFO("x:%lf\ty:%lf\tz:%lf\n", eelink_x, eelink_y, eelink_z);
-                // move(eelink_x, eelink_y, eelink_z + 0.1, eelink_roll, eelink_pitch, main_direction);
-                // move(eelink_x, eelink_y, eelink_z, eelink_roll, eelink_pitch, main_direction);
-                // grasp(grasp_angle);
-                // move(eelink_x, eelink_y, eelink_z + 0.1, eelink_roll, eelink_pitch, main_direction);
-                // grasp(0.8);
-                // move_obj(obj_name, obj_x, obj_y, obj_z, 0, 0, 0);
-                // ROS_INFO("move_and_grasp done!\n");
             }
             if (enable_moveit_flag)
             {

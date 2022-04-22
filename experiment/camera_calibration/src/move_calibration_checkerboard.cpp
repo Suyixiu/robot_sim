@@ -1,7 +1,3 @@
-//uses ROS service to move checkerboard in Gazebo
-//turn off gravity, so object does not fall after repositioning
-//can tune desired range of displacements and rotations
-
 #include <iostream>
 #include <math.h>
 #include <string>
@@ -20,10 +16,9 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/calib3d.hpp>
 
-using namespace cv;
 using namespace std;
 
-Mat RGB_img, IR_img, Depth_img;
+cv::Mat RGB_img, IR_img, Depth_img;
 bool RGB_update_flag = 0, IR_update_flag = 0, Depth_update_flag = 0;
 
 void ir_Callback(const sensor_msgs::ImageConstPtr &msg)
@@ -64,7 +59,7 @@ void depth_Callback(const sensor_msgs::ImageConstPtr &msg)
     Depth_update_flag = 1;
     try
     {
-        Mat Depth_img_32FC1 = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::TYPE_32FC1)->image.clone(); //得到的是32FC1的图片 对应type为5
+        cv::Mat Depth_img_32FC1 = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::TYPE_32FC1)->image.clone(); //得到的是32FC1的图片 对应type为5
         Depth_img_32FC1.convertTo(Depth_img, CV_16U, 65535.0 / 1.0, 0.0);
         Depth_update_flag = 1;
         /* 可选择是否显示图片 */
@@ -167,10 +162,10 @@ int main(int argc, char **argv)
             IR_update_flag = 0;
             Depth_update_flag = 0;
 
-            Size patternsize(7, 6); //标定板的角点个数
-            vector<Point2f> corners;
-            bool RGB_OK = findChessboardCorners(RGB_img, patternsize, corners, CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE + CALIB_CB_FAST_CHECK);
-            bool IR_OK = findChessboardCorners(IR_img, patternsize, corners, CALIB_CB_ADAPTIVE_THRESH + CALIB_CB_NORMALIZE_IMAGE + CALIB_CB_FAST_CHECK);
+            cv::Size patternsize(7, 6); //标定板的角点个数
+            vector<cv::Point2f> corners;
+            bool RGB_OK = findChessboardCorners(RGB_img, patternsize, corners, cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
+            bool IR_OK = findChessboardCorners(IR_img, patternsize, corners, cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
             if (RGB_OK && IR_OK)
             {
                 IR_OK = 0;

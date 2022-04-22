@@ -2,87 +2,32 @@
 #include <pcl/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/PointCloud2.h>
-#include <pcl/io/pcd_io.h>
-
-#include <ros/ros.h>
-#include <sensor_msgs/PointCloud2.h>
-#include <pcl_conversions/pcl_conversions.h>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-
-#include <pcl/common/common_headers.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/visualization/pcl_visualizer.h>
-#include <pcl/console/parse.h>
 
 #include <gpd_ros/CloudIndexed.h>
 #include <gpd_ros/CloudSamples.h>
 #include <gpd_ros/GraspConfigList.h>
 
 #include <moveit/move_group_interface/move_group_interface.h>
-#include <moveit/planning_scene_interface/planning_scene_interface.h>
 
-#include <moveit_msgs/DisplayRobotState.h>
-#include <moveit_msgs/DisplayTrajectory.h>
-#include <moveit_msgs/AttachedCollisionObject.h>
-#include <moveit_msgs/CollisionObject.h>
-
-#include <ros/ros.h>
-#include <tf/tf.h>
-#include <tf/transform_broadcaster.h>
-#include <tf/transform_listener.h>
 #include <geometry_msgs/Twist.h>
 #include "geometry_msgs/Point.h"
 #include <gazebo_msgs/ModelState.h>
-#include <geometry_msgs/Pose.h>
 #include <gazebo_msgs/SetModelState.h>
 #include <std_msgs/Bool.h>
 
 #include <dynamic_reconfigure/server.h>
 #include <robot_sim/gpdConfig.h>
 
-#include <Eigen/Core>
-#include <Eigen/Dense>
+#include <tf/transform_listener.h>
 
 #include <iostream>
-
-using namespace Eigen;
 
 #define math_pi 3.14159265
 
 bool tf_flag = 0;
-bool at_home = 1;
+bool at_home = 0;
 
 using namespace std;
-
-class TransformSender
-{
-public:
-	ros::NodeHandle node_;
-	//constructor
-	TransformSender(double x, double y, double z, double yaw, double pitch, double roll, ros::Time time, const std::string &frame_id, const std::string &child_frame_id)
-	{
-		tf::Quaternion q;
-		q.setRPY(roll, pitch, yaw);
-		transform_ = tf::StampedTransform(tf::Transform(q, tf::Vector3(x, y, z)), time, frame_id, child_frame_id);
-	};
-	TransformSender(double x, double y, double z, double qx, double qy, double qz, double qw, ros::Time time, const std::string &frame_id, const std::string &child_frame_id) : transform_(tf::Transform(tf::Quaternion(qx, qy, qz, qw), tf::Vector3(x, y, z)), time, frame_id, child_frame_id){};
-	//Clean up ros connections
-	~TransformSender() {}
-
-	//A pointer to the rosTFServer class
-	tf::TransformBroadcaster broadcaster;
-
-	// A function to call to send data periodically
-	void send(ros::Time time)
-	{
-		transform_.stamp_ = time;
-		broadcaster.sendTransform(transform_);
-	};
-
-private:
-	tf::StampedTransform transform_;
-};
 
 #define max_velocity 2.0
 #define max_acceleration 2.0
@@ -155,6 +100,18 @@ void move_obj(obj_pos_t obj_pos)
 	flag.data = true;
 	pub_update_flag.publish(flag);
 }
+
+// obj_pos_t box = {"box", -0.13, 0.75, 1.2, 0, 0, 100};
+// obj_pos_t coke = {"coke", -0.25, 0.88, 1, 90, 30, 20};
+// obj_pos_t banana = {"banana", -0.1, 0.65, 1.2, 90, 0, 100};
+// obj_pos_t dropbox = {"dropbox", -0.5, 0.25, 1.2, 0, 0, 90};
+// obj_pos_t wooden_peg = {"wooden_peg", -0.25, 0.73, 1.2, 0, 0, -20};
+
+// obj_pos_t box = {"box", -0.18, 0.75, 1.1, 0.0, 0, 75.6};
+// obj_pos_t coke = {"coke", -0.3, 0.78, 1.1, 90, 30, 140.4};
+// obj_pos_t banana = {"banana", -0.1, 0.87, 1.1, 90, 0, 21.6};
+// obj_pos_t dropbox = {"dropbox", -0.5, 0.25, 1.2, 0, 0, 90};
+// obj_pos_t wooden_peg = {"wooden_peg", -0.31, 0.71, 1.2, 0, 0, -20};
 
 obj_pos_t box = {"box", -0.13, 0.75, 1.2, 0, 0, 126};
 obj_pos_t coke = {"coke", -0.25, 0.88, 1, 90, 30, 10};
@@ -262,6 +219,8 @@ void grasp(float angle)
 	rbq_joint_values[5] = 0;
 
 	gripper_group.setJointValueTarget(rbq_joint_values);
+	gripper_group.setMaxVelocityScalingFactor(0.3);
+	gripper_group.setMaxAccelerationScalingFactor(1);
 	moveit::planning_interface::MoveGroupInterface::Plan gripper_plan;
 	bool grasp_flag = gripper_group.plan(gripper_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS;
 	if (grasp_flag)
@@ -281,14 +240,17 @@ void go_home(void)
 		group.execute(my_plan);
 }
 
-sensor_msgs::PointCloud2 seg_reslut;												//分割后的点云转成ROS格式
-pcl::PointCloud<pcl::PointXYZ>::Ptr full_cloud(new pcl::PointCloud<pcl::PointXYZ>); //点云格式指针 原始的全部点云
-pcl::PointCloud<pcl::PointXYZ>::Ptr output(new pcl::PointCloud<pcl::PointXYZ>);		//分割后的抓取物体的点云
-sensor_msgs::PointCloud2 full_cloud_PointCloud2;									//ROS中点云消息格式的变量
-gpd_ros::CloudIndexed CloudIndexed_msg;												//要发送的index
-gpd_ros::CloudSamples CloudSamples_msg;												//要发送的sample
-vector<int> cloud_index;															//要抓的东西的点云的index
-bool update_flag = 0;																//收到点云后的标志位
+// string fcloud_rame_id = "camera_rgb_optical_frame";
+string fcloud_rame_id = "camera_ir_optical_frame";
+sensor_msgs::PointCloud2 seg_reslut; //分割后的点云转成ROS格式
+// pcl::PointCloud<pcl::PointXYZ>::Ptr full_cloud(new pcl::PointCloud<pcl::PointXYZ>); //点云格式指针 原始的全部点云
+// pcl::PointCloud<pcl::PointXYZ>::Ptr output(new pcl::PointCloud<pcl::PointXYZ>);		//分割后的抓取物体的点云
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr full_cloud(new pcl::PointCloud<pcl::PointXYZRGB>); //点云格式指针 原始的全部点云
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr output(new pcl::PointCloud<pcl::PointXYZRGB>);	  //分割后的抓取物体的点云
+sensor_msgs::PointCloud2 full_cloud_PointCloud2;										  //ROS中点云消息格式的变量
+gpd_ros::CloudSamples *CloudSamples_msg;												  //要发送的sample
+vector<int> cloud_index;																  //要抓的东西的点云的index
+bool update_flag = 0;																	  //收到点云后的标志位
 
 gpd_ros::GraspConfig best_grasp; //最好的抓取点的msg
 bool receive_grasp_flag = 0;	 //收到grasp消息
@@ -303,90 +265,56 @@ void graspCB(const gpd_ros::GraspConfigList &msg)
 	}
 }
 
-void cloudCB(const sensor_msgs::PointCloud2 &msg)
+void cloudCB(const sensor_msgs::PointCloud2 &pcl_msg)
 {
 	/* 只有在原点的地方才处理点云 */
 	if (at_home)
 	{
-		/* clear一下 */
-		CloudSamples_msg.cloud_sources.view_points.clear();
+		// 这里的CloudSamples这个类型包括
+		// 1、一个自定义类型		gpd_ros/CloudSources cloud_sources
+		// 2、一个点类型的数组		geometry_msgs/Point[] samples
+		// 而这个cloud_sources的话则是又包括
+		// 1、一个ROS下面的点云格式			    sensor_msgs/PointCloud2 cloud
+		// 2、这个不知道是什么 直接填0就可以了	  std_msgs/Int64[] camera_source
+		// 3、相机的位置 直接000就好了          geometry_msgs/Point[] view_points
+		gpd_ros::CloudSamples *gpd_msg = new gpd_ros::CloudSamples(); //要发送的sample
 
-		output->points.clear();
-		CloudSamples_msg.samples.clear();
+		sensor_msgs::PointCloud2 full_cloud_PointCloud2 = pcl_msg;			  //ros类型的消息直接就进CloudSamples的cloud_sources.cloud
+		full_cloud_PointCloud2.header.frame_id = fcloud_rame_id;			  //相对坐标
+		gpd_msg->cloud_sources.cloud = full_cloud_PointCloud2;				  //原始点云
+		gpd_msg->cloud_sources.view_points.push_back(geometry_msgs::Point()); //(0， 0， 0)
 
-		// PointCloudT::Ptr temp(new PointCloudT);
-		pcl::fromROSMsg(msg, *full_cloud); //从ROS类型消息转为PCL类型消息
-
-		// pcl::PointCloud<pcl::PointXYZRGBA> cloud;
-		// pcl::fromROSMsg(msg, cloud); //从ROS类型消息转为PCL类型消息
-		// pcl::io::savePCDFileASCII("./1.pcd", cloud); //保存原始的pcd
-
-		// removeNan(temp, full_cloud);																				//去nan
+		pcl::fromROSMsg(pcl_msg, *full_cloud); //从ROS类型消息转为PCL类型消息
+		std_msgs::Int64 Int64_zero;
+		Int64_zero.data = 0; //去nan
+		output->clear();
 		for (size_t i = 0; i < full_cloud->points.size(); i++)
 		{
-			/* 0.7233 = 1.688-0.9647 1.688为ir相机的高度 0.9647为桌子的高度 */
+			gpd_msg->cloud_sources.camera_source.push_back(Int64_zero); //camera_source都填为0
+			/* 0.435 = 1.3998-0.9647 1.3998为ir相机的高度 0.9647为桌子的高度 */
 			if (fabs(full_cloud->points[i].z - 0.7233) > 0.005)
 			{
-				pcl::PointXYZ temp;
+				// pcl::PointXYZ temp;
+				pcl::PointXYZRGB temp;
 
 				temp.x = full_cloud->points[i].x;
 				temp.y = full_cloud->points[i].y;
 				temp.z = full_cloud->points[i].z;
+				temp.r = full_cloud->points[i].r;
+				temp.g = full_cloud->points[i].g;
+				temp.b = full_cloud->points[i].b;
 				output->points.push_back(temp);
 				geometry_msgs::Point sample_point;
-				sample_point.x = output->points[i].x;
-				sample_point.y = output->points[i].y;
-				sample_point.z = output->points[i].z;
-				CloudSamples_msg.samples.push_back(sample_point);
+				sample_point.x = temp.x;
+				sample_point.y = temp.y;
+				sample_point.z = temp.z;
+				gpd_msg->samples.push_back(sample_point);
 				// cloud_index.push_back(i);
 			}
 		}
-		sensor_msgs::PointCloud2 full_cloud_PointCloud2 = msg;						  //ros类型的消息直接就进CloudSamples_msg.cloud_sources.cloud
-		full_cloud_PointCloud2.header.frame_id = "camera_ir_optical_frame";			  //相对坐标
-		CloudSamples_msg.cloud_sources.cloud = full_cloud_PointCloud2;				  //原始点云
-		CloudSamples_msg.cloud_sources.view_points.push_back(geometry_msgs::Point()); //(0， 0， 0)
-
-		CloudSamples_msg.cloud_sources.camera_source.clear();
-		std_msgs::Int64 Int64_zero;
-		Int64_zero.data = 0;
-		for (int i = 0; i < full_cloud->points.size(); i++)
-		{
-			CloudSamples_msg.cloud_sources.camera_source.push_back(Int64_zero);
-		}
+		CloudSamples_msg = gpd_msg;
 		printf("segmentation done!\n");
 		at_home = 0;
-	}
-}
-
-void pre_data()
-{
-	/* 因为是文件打开所以点云数量等东西是直接固定的 */
-	sensor_msgs::PointCloud2 full_cloud_PointCloud2;
-	pcl::toROSMsg(*full_cloud, full_cloud_PointCloud2); //转成ROS中的点云格式
-	// full_cloud_PointCloud2.header.frame_id = "base_link";						  //相对坐标
-	full_cloud_PointCloud2.header.frame_id = "camera_ir_optical_frame";			  //相对坐标
-	CloudSamples_msg.cloud_sources.cloud = full_cloud_PointCloud2;				  //原始点云
-	CloudSamples_msg.cloud_sources.view_points.push_back(geometry_msgs::Point()); //(0， 0， 0)
-	std_msgs::Int64 Int64_zero;
-	Int64_zero.data = 0;
-	/* 填一个全部点云大小的零 */
-	for (int i = 0; i < full_cloud->points.size(); i++)
-	{
-		CloudSamples_msg.cloud_sources.camera_source.push_back(Int64_zero);
-		if (fabs(full_cloud->points[i].z - 0.7233) > 0.005)
-		{
-			pcl::PointXYZ temp;
-
-			temp.x = full_cloud->points[i].x;
-			temp.y = full_cloud->points[i].y;
-			temp.z = full_cloud->points[i].z;
-			output->points.push_back(temp);
-			geometry_msgs::Point sample_point;
-			sample_point.x = temp.x;
-			sample_point.y = temp.y;
-			sample_point.z = temp.z;
-			CloudSamples_msg.samples.push_back(sample_point);
-		}
 	}
 }
 
@@ -396,13 +324,17 @@ int main(int argc, char **argv)
 	ros::NodeHandle nh;
 	ros::Rate loop_rate(10); //设置发送数据的频率
 
-	// ros::Subscriber pcl_sub = nh.subscribe("/camera/depth/points", 10, cloudCB);			//将/kinect2/depth/points这个topic的点云保存下来
-	ros::Publisher pcl_sample_pub = nh.advertise<gpd_ros::CloudSamples>("cloud_sample", 1); //用于发送抓取物体的点云的index
-	ros::Publisher pcl_pub = nh.advertise<sensor_msgs::PointCloud2>("pcl_output", 1);		//用于发送分割后的点云
+	ros::Subscriber pc_input_sub = nh.subscribe("/camera/depth/points", 10, cloudCB);
+	// ros::Subscriber pc_input_sub = nh.subscribe("/camera/rgb/points", 10, cloudCB);
+	ros::Subscriber grasps_sub_ = nh.subscribe("/detect_grasps/clustered_grasps", 10, graspCB); //GPD发布的grasp
+	ros::Publisher pc_sample_pub = nh.advertise<gpd_ros::CloudSamples>("cloud_sample", 1);		//用于发送抓取物体的点云的index
+	ros::Publisher seg_result_pub = nh.advertise<sensor_msgs::PointCloud2>("pc_output", 1);
 
-	// while (pcl_sample_pub.getNumSubscribers() < 1)
+	ROS_INFO("let's rock!\n");
+
+	// while (pc_sample_pub.getNumSubscribers() < 1)
 	// 	;
-	// while (pcl_pub.getNumSubscribers() < 1)
+	// while (seg_result_pub.getNumSubscribers() < 1)
 	// 	;
 
 	dynamic_reconfigure::Server<robot_sim::gpdConfig> server;
@@ -414,36 +346,54 @@ int main(int argc, char **argv)
 	ros::AsyncSpinner spinner(1);
 	spinner.start();
 
-	ROS_INFO("let's rock!\n");
-
-	pcl::io::loadPCDFile("./1.pcd", *full_cloud);
-	/* 因为是打开文件 所以直接把里面的cloud跟index都确定下来 */
-	pre_data();
-	/* 开始第一次直接就是发点云咯 */
-	sensor_msgs::PointCloud2 seg_reslut;
-	pcl::toROSMsg(*output, seg_reslut);
-	seg_reslut.header.frame_id = "camera_ir_optical_frame";
-	pcl_pub.publish(seg_reslut);
-	pcl_sample_pub.publish(CloudSamples_msg);
-	cout << "publish finish!\n";
 	grasp(0.6);
 	grasp(0.8);
 	go_home();
 	reset_obj_pos();
 	ros::Duration(1).sleep();
 
-	tf::Transform world2cam;
-	tf::Quaternion world2cam_Q(1.0, 0.0, 0.0, 0.0);
-	world2cam_Q.setRPY(0, 0, math_pi);
-	world2cam.setRotation(world2cam_Q);
-	world2cam.setOrigin(tf::Vector3(-0.196355, 0.801140, 1.687952));
+	tf::TransformListener listener;
+	/* 首先获取机械臂初始位置时world到tool的TF关系 */
+	tf::StampedTransform world2tool;
+	while (1)
+	{
+		try
+		{
+			listener.lookupTransform("/world", "/yixiuge_ee_link", ros::Time(0), world2tool);
+			printf("world2tool %f  %f  %f  %f  %f  %f %f\n", world2tool.getOrigin().x(), world2tool.getOrigin().y(), world2tool.getOrigin().z(),
+				   world2tool.getRotation().getX(), world2tool.getRotation().getY(), world2tool.getRotation().getZ(), world2tool.getRotation().getW());
+			break; //如果成功了就跳出去咯
+		}
+		catch (tf::TransformException &ex)
+		{
+			ROS_ERROR("%s", ex.what());
+			ROS_ERROR("lookupTransform world to yixiuge_ee_link faild", ex.what());
+			ros::Duration(1.0).sleep();
+			continue;
+		}
+	}
 
-	/* 最好的那个grasp的pose变成ur爪子的坐标系 */
+	/* 最好的那个grasp的pose变成ur爪子的坐标系有两个旋转 */
 	tf::Transform grasp2urPose;
 	tf::Quaternion grasp2urPose_Q;
 	grasp2urPose_Q.setRPY(math_pi / 2, 0, -math_pi / 2);
 	grasp2urPose.setRotation(grasp2urPose_Q);
 	grasp2urPose.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
+
+	/* 手到眼的TF 由手眼标定而来 */
+	// tf::Transform tool2cam;
+	// tf::Quaternion tool2cam_Q(0.999992, -0.002807, -0.002813, 0.000013);
+	// tool2cam.setRotation(tool2cam_Q);
+	// tool2cam.setOrigin(tf::Vector3(-0.037471, 0.127866, 0.136702));
+	/* 手到深度相机的的TF */
+	tf::Transform tool2cam;
+	tf::Quaternion tool2cam_Q(1, -0.0, -0.0, 0.0);
+	tool2cam.setRotation(tool2cam_Q);
+	tool2cam.setOrigin(tf::Vector3(-0.0325, 0.128, 0.1425));
+
+	/* world到cam的关系 只要你起始位置也就是world2tool是固定的那world2cam就一定是固定的 */
+	tf::Transform world2cam;
+	world2cam.mult(world2tool, tool2cam); //world2tool X tool2cam = world2cam;
 
 	/* 开始第一次直接就是发点云咯 */
 	at_home = 1;
@@ -451,13 +401,15 @@ int main(int argc, char **argv)
 		;
 	pcl::toROSMsg(*output, seg_reslut);
 	cout << "output points size\t" << output->points.size() << endl;
-	seg_reslut.header.frame_id = "camera_ir_optical_frame";
-	pcl_pub.publish(seg_reslut);
-	pcl_sample_pub.publish(CloudSamples_msg);
+	seg_reslut.header.frame_id = fcloud_rame_id;
+	seg_result_pub.publish(seg_reslut);
+	pc_sample_pub.publish(*CloudSamples_msg);
+	delete CloudSamples_msg;
 	cout << "publish finish!\n";
 
 	while (ros::ok())
 	{
+		static int count = 0;
 		/* 如果收到爪子且是好的则让机械臂过去 */
 		if (receive_grasp_flag && good_grasp)
 		{
@@ -477,9 +429,8 @@ int main(int argc, char **argv)
 			orientation.getRotation(cam2grasp_pose_Q); //将旋转矩阵转成四元数
 			cam2grasp.setRotation(cam2grasp_pose_Q);   //设置cam2grasp的旋转
 
-			tf::Transform cam2urPose, cam2urPose_top_10cm, world2urPose;
+			tf::Transform cam2urPose, world2urPose;
 			cam2urPose.mult(cam2grasp, grasp2urPose); //cam2grasp X grasp2urPose = cam2urPose;
-			/* 妈的如果要反转180度 */
 			if (add_pi)
 			{
 				add_pi = 0;
@@ -507,6 +458,8 @@ int main(int argc, char **argv)
 				world2urPose.mult(world2urPose, yaw_pi_rotation);
 			}
 
+			world2urPose.getOrigin().setZ(world2urPose.getOrigin().z() + 0.01);
+
 			tf::Transform above_10cm_of_best, add_10cm_to_Z;
 			tf::Quaternion add_10cm_to_Z_Q;
 			add_10cm_to_Z_Q.setRPY(0, 0, 0);
@@ -514,16 +467,20 @@ int main(int argc, char **argv)
 			add_10cm_to_Z.setOrigin(tf::Vector3(0.0, 0.0, 0.10));
 			above_10cm_of_best.mult(world2urPose, add_10cm_to_Z);
 
-			printf("rosrun yixiuge_ur move_test %f  %f  %f  %f  %f  %f %f\n", world2urPose.getOrigin().x(), world2urPose.getOrigin().y(), world2urPose.getOrigin().z(),
-				   world2urPose.getRotation().getX(), world2urPose.getRotation().getY(), world2urPose.getRotation().getZ(), world2urPose.getRotation().getW());
-			printf("rosrun tf static_transform_publisher %f  %f  %f  %f  %f  %f %f world wtf 1000\n", world2urPose.getOrigin().x(), world2urPose.getOrigin().y(), world2urPose.getOrigin().z(),
-				   world2urPose.getRotation().getX(), world2urPose.getRotation().getY(), world2urPose.getRotation().getZ(), world2urPose.getRotation().getW());
-
+			move(above_10cm_of_best);
 			move(world2urPose);
-			grasp(0.5);
+			/* 抓取并扔到盒子里 */
+			grasp(0.33);
 			go_home();
 			move(-0.465, 0.24, 1.4, 0.0, 0.0, 0.0); //箱子上边
 			grasp(0.8);
+			count++;
+			if (count == 3)
+			{
+				count = 0;
+				reset_obj_pos();
+			}
+			// ros::Duration(20).sleep();//暂停10秒用于截图
 			go_home();
 
 			ros::Duration(0.5).sleep();
@@ -532,9 +489,10 @@ int main(int argc, char **argv)
 			while (at_home) //等待处理完点云
 				;
 			pcl::toROSMsg(*output, seg_reslut);
-			seg_reslut.header.frame_id = "camera_ir_optical_frame";
-			pcl_pub.publish(seg_reslut);
-			pcl_sample_pub.publish(CloudSamples_msg);
+			seg_reslut.header.frame_id = fcloud_rame_id;
+			seg_result_pub.publish(seg_reslut);
+			pc_sample_pub.publish(*CloudSamples_msg);
+			delete CloudSamples_msg;
 			cout << "publish finish!\n";
 		}
 		/* 收到爪子但不能去则待在原地重新发分割的点云 */
@@ -546,9 +504,10 @@ int main(int argc, char **argv)
 			while (at_home) //等待处理完点云
 				;
 			pcl::toROSMsg(*output, seg_reslut);
-			seg_reslut.header.frame_id = "camera_ir_optical_frame";
-			pcl_pub.publish(seg_reslut);
-			pcl_sample_pub.publish(CloudSamples_msg);
+			seg_reslut.header.frame_id = fcloud_rame_id;
+			seg_result_pub.publish(seg_reslut);
+			pc_sample_pub.publish(*CloudSamples_msg);
+			delete CloudSamples_msg;
 			cout << "publish finish!\n";
 		}
 

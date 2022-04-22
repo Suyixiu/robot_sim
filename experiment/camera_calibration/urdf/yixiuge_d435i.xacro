@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="yixiuge_d435i">
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="yixiuge_d435i">
 	<property name="M_PI" value="3.141592654" />
 	<xacro:property name="d435_zero_depth_to_glass" value="4.2e-3"/>
 	<xacro:property name="d435_glass_to_front" value="0.1e-3"/>
@@ -146,7 +146,16 @@
 		</joint>
 
 		<gazebo reference="camera_base_link">
-			<!-- <material>Gazebo/Blue</material> -->
+			<turnGravityOff>true</turnGravityOff>
+		</gazebo>
+		<gazebo reference="cam_rgb_link">
+			<turnGravityOff>true</turnGravityOff>
+		</gazebo>
+		<gazebo reference="camera_ir_link">
+			<turnGravityOff>true</turnGravityOff>
+		</gazebo>
+		<gazebo reference="camera_ir_optical_frame">
+			<turnGravityOff>true</turnGravityOff>
 		</gazebo>
 
 		<xacro:cam_rgb />

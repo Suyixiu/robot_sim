@@ -4,9 +4,12 @@
 #include <moveit_msgs/DisplayRobotState.h>
 #include <moveit_msgs/DisplayTrajectory.h>
 #include <moveit_visual_tools/moveit_visual_tools.h>
-#include "dh_gripper_serial_driver.h"
 
-Point3f home(-0.2209, 0.7, 0.2 + 1.2);
+#define math_pi 3.14159265
+#define max_velocity 2.0
+#define max_acceleration 2.0
+
+cv::Point3f home(-0.2209, 0.7, 0.2 + 1.2);
 
 double pose_distance(geometry_msgs::Pose pose1, geometry_msgs::Pose pose2)
 {
@@ -70,7 +73,7 @@ bool move(float x, float y, float z, float roll, float pitch, float yaw)
 * @param	target_point:目标点
 * @param	yaw：从上往下看 顺时针从左到右分别是90 0 -90
 */
-bool move(Point3f target_point, float yaw)
+bool move(cv::Point3f target_point, float yaw)
 {
 	moveit::planning_interface::MoveGroupInterface group("manipulator"); //ur5对应moveit中选择的规划部分
 
@@ -304,29 +307,6 @@ void go_home(void)
 	robot_state::RobotState current_state(*group.getCurrentState());
 	current_state.setToDefaultValues(current_state.getJointModelGroup("manipulator"), "yixiuge_home");
 	// current_state.setToDefaultValues(current_state.getJointModelGroup("manipulator"), "test");
-	group.setJointValueTarget(current_state);
-	group.setMaxVelocityScalingFactor(max_velocity);
-	group.setMaxAccelerationScalingFactor(max_acceleration);
-
-	moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-	bool success = group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS;
-	if (success)
-		group.execute(my_plan);
-}
-
-void go_fix_pose(uint point_ID)
-{
-	moveit::planning_interface::MoveGroupInterface group("manipulator");
-	robot_state::RobotState current_state(*group.getCurrentState());
-	// current_state.setToDefaultValues(current_state.getJointModelGroup("manipulator"), "yixiuge_home");
-	if (point_ID == pos1_ID)
-		current_state.setToDefaultValues(current_state.getJointModelGroup("manipulator"), "yixiuge_home");
-	else if (point_ID == pos2_ID)
-		current_state.setToDefaultValues(current_state.getJointModelGroup("manipulator"), "pos2");
-	else if (point_ID == pos3_ID)
-		current_state.setToDefaultValues(current_state.getJointModelGroup("manipulator"), "pos3");
-	else if (point_ID == pos4_ID)
-		current_state.setToDefaultValues(current_state.getJointModelGroup("manipulator"), "pos4");
 	group.setJointValueTarget(current_state);
 	group.setMaxVelocityScalingFactor(max_velocity);
 	group.setMaxAccelerationScalingFactor(max_acceleration);

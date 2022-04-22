@@ -37,6 +37,7 @@ git reset --hard 64b8b88                                                        
 cd ..
 git clone -b kinetic-devel https://github.com/ros-industrial/universal_robot.git    #universal_robot
 git clone https://github.com/Suyixiu/robot_sim                                      #本功能包
+cd ..
 rosdep install --from-paths src --ignore-src --rosdistro=kinetic                    #安装依赖
 catkin_make
 
@@ -67,6 +68,7 @@ rosrun camera_calibration cameracalibrator.py --size 7x6 --square 0.01 image:=/c
 
 接下来是移动标定板，程序中设定的是1秒钟产生一个随机位置并移动标定板，若相机能正确识别出标定板角点则将此时的照片保存，有深度图，红外相机的图还有RGB图存放在`save_checkboard_img`目录中。当你觉得采的图片足够多之后即可停止这个程序。
 ```
+cd ~/your_catkin_ws/
 rosrun robot_sim camera_calibration
 ```
 这里我们提供了一个python的脚本`camera_calibration.py`，位于`robot_sim/experiment/camera_calibration/scripts`，用于载入前面保存的图片以计算RGB相机与IR相机的内参并分别保存在`IR_cameraintrinsic_parameters.npz`与`RGB_cameraintrinsic_parameters.npz`中，直接python运行此脚本即可。你也可以自己写程序来计算内参，并与前面公式计算的结果像对比以验证你的标定算法的准确性与误差。
@@ -125,8 +127,9 @@ rotation:
   z: 0
   w: 0
 ```
-手眼标定完成电机save后数据会保存在`~/.ros/easy_handeye/`的`easy_handeye_eye_on_hand.yaml`中，运行下面的launch文件来观察标定的结果
+手眼标定完成点击save后数据会保存在`~/.ros/easy_handeye/`的`easy_handeye_eye_on_hand.yaml`中，运行下面的launch文件来观察标定的结果
 ```
+roslaunch yixiuge_ur10_moveit_config yixiuge_ur_moveit.launch
 roslaunch robot_sim hand_eye_calibration_result.launch
 ```
 <img src="https://z3.ax1x.com/2021/06/02/2lKUR1.png" width = "500" />    
@@ -136,9 +139,9 @@ roslaunch robot_sim hand_eye_calibration_result.launch
 ### 基于几何方法的抓取  
 先把机械臂和抓取环境load进来随后启动抓取。
 ```
-cd ~/your_catkin_ws/
-roslaunch robot_sim geometric_method_grasp.launch 
-rosrun robot_sim geometric_method_grasp
+roslaunch robot_sim grasp_world.launch 
+cd ~/your_catkin_ws/                                #这是必要的
+rosrun robot_sim geometric_method_grasp             #因为这里要加载mask所以路径要对
 ```
 我们这里提供的方法主要原理是先将物体从桌面分割，这里的分割使用的是直接将相机当前画面减去一个mask，然后设置阈值二值化。因为是仿真环境所以这样做还是比较稳定的，分割效果也是没有问题的。但这种超级简单的做法仅限于环境固定的情况，实际使用的话还是建议使用其他分割算法，比如用深度图生成掩模来提取物体。  
 <img src="https://z3.ax1x.com/2021/06/03/283gmR.png" width = "900" />    
@@ -150,10 +153,19 @@ rosrun robot_sim geometric_method_grasp
 ### 基于机器学习方法的抓取
 这里使用的是atenpas的[GPD](https://github.com/atenpas/gpd)这个方法，具体原理可见[论文](https://arxiv.org/abs/1706.09911)，这里不再赘述。在搭建GPD库的时候你可能会遇到某些问题，倘若GPD2.0.0版本出现问题则建议使用GPD1.5.0。这里在我们的仿真环境中成功运行了这一算法。我们提供的代码使用的是GPD的sample方式，使用的是caffe的cfg文件。再运行这部分代码的时候请注意调整cfg文件到正确的路径。此外这里的分割使用的是根据距离风格，而实际更为鲁棒的做法应该是使用RGB图生成掩模来分割点云。
 ```
-roslaunch robot_sim GPD_method_grasp.launch
+roslaunch robot_sim grasp_world.launch
 roslaunch robot_sim gpd_run.launch type:=2 topic:=/cloud_sample
+rosrun robot_sim GPD_method_grasp
 ```
 <img src="https://z3.ax1x.com/2021/06/03/28YngS.png" width = "900" />  
+
+### 验证你的GPD是否安装正确  
+GPD的安装跟使用很蛋疼，如果上面的GPD抓取有报错很有可能是你GPD没有装对。下面提供了一个测试你的GPD是否可用的包。
+```
+roslaunch robot_sim gpd_run.launch type:=2 topic:=/cloud_sample
+roslaunch robot_sim test_gpd.launch
+```
+如果你不想使用GPD那就直接把CMakeLists里面的有关GPD的都注释掉即可。
 
 ### 关于gazebo中抓手抓取物体会莫名抖动
 这是因为抓手的控制是位置控制而不是力控制所造成的。我们是使用JenniferBuehler编写的gazebo插件[gazebo-pkgs](https://github.com/JenniferBuehler/gazebo-pkgs)来解决这个问题的。具体原理是插件会检测手指与物体接触，设定一些阈值当达到条件之后将物体与抓手的相对位置进行固定并失能物体的collision属性从而解决这一抖动的问题。
@@ -162,6 +174,7 @@ roslaunch robot_sim gpd_run.launch type:=2 topic:=/cloud_sample
 主要原理是围绕物体生成若干个位姿，随后驱动机械臂运动到指定位姿之后拍照，保存数据
 ```
 roslaunch robot_sim data_collection.launch
+cd ~/your_catkin_ws/                                #这是必要的
 rosrun robot_sim data_collection
 ```
 其中采样点的多少以及位置等都是可以认为调节的，以下是56个的采样点

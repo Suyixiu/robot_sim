@@ -1,21 +1,51 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:macro name="dh_robotics_ag95_gripper_transmission" params="prefix">
+    <xacro:macro name="dh_robotics_ag95_gripper_transmission" params="prefix">
 
         <transmission name="${prefix}gripper_finger1_trans">
             <type>transmission_interface/SimpleTransmission</type>
             <joint name="${prefix}gripper_finger1_joint">
-                <hardwareInterface>PositionJointInterface</hardwareInterface>
+                <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             </joint>
             <actuator name="${prefix}gripper_finger1_motor">
                 <mechanicalReduction>1</mechanicalReduction>
-                <hardwareInterface>PositionJointInterface</hardwareInterface>
+                <!-- <hardwareInterface>PositionJointInterface</hardwareInterface> -->
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             </actuator>
         </transmission>
-        
-        <gazebo>
-                <!-- loading plugin: mimic joints works in gazebo now -->
+
+        <!-- ros_control plugin -->
+        <xacro:macro name="mimic_joint_plugin_gazebo" params="parent_joint plugin_index_name mimic_joint has_pid:=false multiplier:=1.0 offset:=0 sensitiveness:=0.0 max_effort:=200.0 robot_namespace:=''">
+            <gazebo>
+                <plugin name="${plugin_index_name}" filename="libroboticsgroup_gazebo_mimic_joint_plugin.so">
+                    <joint>${parent_joint}</joint>
+                    <mimicJoint>${mimic_joint}</mimicJoint>
+                    <xacro:if value="${has_pid}">
+                        <hasPID />
+                    </xacro:if>
+                    <multiplier>${multiplier}</multiplier>
+                    <offset>${offset}</offset>
+                    <sensitiveness>${sensitiveness}</sensitiveness>
+                    <maxEffort>${max_effort}</maxEffort>
+                    <xacro:unless value="${robot_namespace == ''}">
+                        <robotNamespace>($robot_namespace)</robotNamespace>
+                    </xacro:unless>
+                </plugin>
+            </gazebo>
+        </xacro:macro>
+
+
+        <xacro:mimic_joint_plugin_gazebo parent_joint="gripper_finger1_joint" mimic_joint="gripper_finger2_joint" has_pid="false" multiplier="1.0" max_effort="200.0"  plugin_index_name="ag95_1"/>
+        <xacro:mimic_joint_plugin_gazebo parent_joint="gripper_finger1_joint" mimic_joint="gripper_finger2_inner_knuckle_joint" has_pid="false" multiplier="1.49462955" max_effort="200.0" plugin_index_name="ag95_2"/>
+        <xacro:mimic_joint_plugin_gazebo parent_joint="gripper_finger1_joint" mimic_joint="gripper_finger1_inner_knuckle_joint" has_pid="false" multiplier="1.49462955" max_effort="200.0" plugin_index_name="ag95_3"/>
+        <xacro:mimic_joint_plugin_gazebo parent_joint="gripper_finger1_joint" mimic_joint="gripper_finger1_finger_tip_joint" has_pid="false" multiplier="1.49462955" max_effort="200.0" plugin_index_name="ag95_4"/>
+        <xacro:mimic_joint_plugin_gazebo parent_joint="gripper_finger1_joint" mimic_joint="gripper_finger2_finger_tip_joint" has_pid="false" multiplier="1.49462955" max_effort="200.0" plugin_index_name="ag95_5"/>
+        <xacro:mimic_joint_plugin_gazebo parent_joint="gripper_finger1_joint" mimic_joint="gripper_finger1_finger_joint" has_pid="false" multiplier="0.4563942" max_effort="200.0" plugin_index_name="ag95_6"/>
+        <xacro:mimic_joint_plugin_gazebo parent_joint="gripper_finger1_joint" mimic_joint="gripper_finger2_finger_joint" has_pid="false" multiplier="0.4563942" max_effort="200.0" plugin_index_name="ag95_7"/>
+
+        <!-- <gazebo>
             <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_dh_robotics_ag95_1">
                 <joint>${prefix}gripper_finger1_joint</joint>
                 <mimicJoint>${prefix}gripper_finger2_joint</mimicJoint>
@@ -58,7 +88,7 @@
                 <multiplier>0.4563942</multiplier>
                 <offset>0.0</offset>
             </plugin>
-        </gazebo>
+        </gazebo> -->
 
     </xacro:macro>
 

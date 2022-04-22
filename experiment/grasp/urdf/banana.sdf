@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="banana">
+    <link name="link">
+      <inertial>
+        <pose>0.008419 0.000166 0.084099 0 0 0</pose>
+        <mass>0.01</mass>
+        <inertia>
+          <ixx>0.000035873</ixx>
+          <ixy>1.5e-8</ixy>
+          <ixz>-6.393e-6</ixz>
+          <iyy>3.8443e-5</iyy>
+          <iyz>1.5e-8</iyz>
+          <izz>5.457e-6</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>file:///home/suyixiu/catkin_ws/src/robot_sim/experiment/grasp/urdf/meshes/banana.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>0.2</mu>
+              <mu2>0.2</mu2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <kp>1e30</kp>
+              <kd>1e6</kd>
+              <max_vel>0</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name="visual">
+        <pose>0.0 0.0 -0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>file:///home/suyixiu/catkin_ws/src/robot_sim/experiment/grasp/urdf/meshes/banana.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

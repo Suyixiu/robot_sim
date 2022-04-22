@@ -12,33 +12,34 @@
     <arg name="gui" value="$(arg gui)"/>
   </include>
 
-  <!-- send robot urdf to param server -->
-  <include file="$(find yixiuge_ur10_moveit_config)/launch/yixiuge_ur_upload.launch">
-    <arg name="limited" value="$(arg limited)"/>
-  </include>
+  <arg name="controller" default="postion"/>
+  <!-- start ur controller position -->
+  <group if="$(eval controller == 'postion')">
+    <include file="$(find yixiuge_ur10_moveit_config)/launch/yixiuge_ur_upload.launch">
+      <arg name="limited" value="$(arg limited)"/>
+      <arg name="transmission_hw_interface" value="hardware_interface/PositionJointInterface" />
+    </include>
+    <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model yixiuge_ur10 -z 0" respawn="false" output="screen"/>
+    <rosparam file="$(find ur_gazebo)/controller/arm_controller_ur10.yaml" command="load"/>
+    <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn arm_controller" respawn="false" output="screen"/>
+    <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="load joint_group_position_controller" />
+  </group>
 
-  <!-- push robot_description to factory and spawn robot in gazebo -->
-  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model yixiuge_ur10 -z 0" respawn="false" output="screen"/>
+  <!-- start ur controller effort -->
+  <group if="$(eval controller == 'effort')">
+    <include file="$(find yixiuge_ur10_moveit_config)/launch/yixiuge_ur_upload.launch">
+      <arg name="limited" value="$(arg limited)"/>
+      <arg name="transmission_hw_interface" value="hardware_interface/EffortJointInterface" />
+    </include>
+    <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model yixiuge_ur10 -z 0" respawn="false" output="screen"/>
+    <rosparam file="$(find yixiuge_ur10_moveit_config)/config/arm_controller_ur10_effort.yaml" command="load"/>
+    <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn arm_controller" respawn="false" output="screen"/>
+  </group>
 
   <include file="$(find ur_gazebo)/launch/controller_utils.launch"/>
 
   <!-- start gripper controller -->
-  <![CDATA[
-  <rosparam file="$(find robotiq_85_gazebo)/controller/gripper_controller_robotiq.yaml" command="load"/>
-  <node name="gripper_controller_spawner" pkg="controller_manager" type="spawner" args="gripper --shutdown-timeout 0.5" />
-  ]]>
-
-  <rosparam file="$(find dh_robotics_ag95_gazebo)/controller/gripper_controller_dh_robotics.yaml" command="load"/>
-  <node name="gripper_controller_spawner" pkg="controller_manager" type="spawner" args="gripper --shutdown-timeout 0.5" />
-
-  <!-- <rosparam file="$(find robotiq_85_gazebo)/controller/test.yaml" command="load"/> -->
-  <!-- <node name="gripper_controller_spawner" pkg="controller_manager" type="spawner" args="gripper_controller shutdown-timeout 0.5" /> -->
-
-  <!-- start ur controller -->
-  <rosparam file="$(find ur_gazebo)/controller/arm_controller_ur10.yaml" command="load"/>
-  <node name="arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn arm_controller" respawn="false" output="screen"/>
-
-  <!-- load other controllers -->
-  <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="load joint_group_position_controller" />
+  <rosparam file="$(find yixiuge_ur10_moveit_config)/config/dh_gripper.yaml" command="load"/>
+  <node name="gripper_controller_spawner" pkg="controller_manager" type="spawner" args="gripper" />
 
 </launch>

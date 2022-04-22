@@ -1,18 +1,19 @@
 <?xml version="1.0"?>
 
 
-<robot name="dh_robotics_ag95_gripper" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="dh_robotics_ag95_gripper"
+    xmlns:xacro="http://ros.org/wiki/xacro">
     <xacro:include filename="$(find dh_robotics_ag95_description)/urdf/dh_robotics_ag95_gripper.transmission.xacro" />
-    
+
     <xacro:macro name="dh_robotics_ag95_gripper" params="prefix parent *origin">
 
-        <joint name="${prefix}gripper_base_joint" type="fixed">
+        <joint name="gripper_base_joint" type="fixed">
             <parent link="${parent}"/>
-            <child link="${prefix}gripper_base_link"/>
+            <child link="gripper_base_link"/>
             <xacro:insert_block name="origin"/>
         </joint>
-        
-        <link name="${prefix}gripper_base_link">
+
+        <link name="gripper_base_link">
             <visual>
                 <geometry>
                     <mesh filename="package://dh_robotics_ag95_description/meshes/visual/base_link.STL"  scale = "0.001 0.001 0.001"/>
@@ -32,60 +33,42 @@
             </inertial>
         </link>
 
-        <gazebo reference="${prefix}gripper_base_link">
-            <implicitSpringDamper>1</implicitSpringDamper>
-            <mu1>100000</mu1>
-            <mu2>100000</mu2>
+        <gazebo reference="gripper_base_link">
+            <turnGravityOff>true</turnGravityOff>
+            <mu1>0.9</mu1>
+            <mu2>0.9</mu2>
             <kp>100000000.0</kp>
             <kd>1.0</kd>
-        </gazebo>   
+            <maxVel>0.0</maxVel>
+            <minDepth>0.001</minDepth>
+        </gazebo>
 
-        <joint name="${prefix}gripper_finger1_joint" type="revolute">
-            <parent link="${prefix}gripper_base_link"/>
-            <child link="${prefix}gripper_finger1_knuckle_link"/>
+        <joint name="gripper_finger1_joint" type="revolute">
+            <parent link="gripper_base_link"/>
+            <child link="gripper_finger1_knuckle_link"/>
             <axis xyz="0 -1 0"/>
             <origin rpy="0.0 0.0 ${pi}" xyz="-0.016 0 0.10586"/>
-            <limit lower="0.0" upper="0.65" velocity="2.0" effort="1000"/>
+            <limit lower="0.0" upper="0.65" velocity="2.0" effort="1"/>
+            <dynamics damping="0.7"/>
         </joint>
+        <gazebo reference="gripper_finger1_joint">
+            <implicitSpringDamper>1</implicitSpringDamper>
+        </gazebo>
 
-        <joint name="${prefix}gripper_finger2_joint" type="revolute">
-            <parent link="${prefix}gripper_base_link"/>
-            <child link="${prefix}gripper_finger2_knuckle_link"/>
+        <joint name="gripper_finger2_joint" type="revolute">
+            <parent link="gripper_base_link"/>
+            <child link="gripper_finger2_knuckle_link"/>
             <axis xyz="0 -1 0"/>
             <origin rpy="0.0 0.0 0.0" xyz="0.016  0 0.10586 "/>
-            <limit lower="-3.14" upper="3.14" velocity="100.0" effort="1000"/>
-            <mimic joint="${prefix}gripper_finger1_joint"/>
+            <limit lower="-3.14" upper="3.14" velocity="2.0" effort="1"/>
+            <mimic joint="gripper_finger1_joint"/>
+            <dynamics damping="0.7"/>
         </joint>
-
-        <link name="${prefix}gripper_finger1_knuckle_link">
-            <visual>
-                <geometry>
-                    <mesh filename="package://dh_robotics_ag95_description/meshes/visual/crank_Link.STL"  scale = "0.001 0.001 0.001"/>
-                </geometry>
-            </visual>
-            <collision>
-                <geometry>
-                    <mesh filename="package://dh_robotics_ag95_description/meshes/visual/crank_Link.STL"  scale = "0.001 0.001 0.001"/>
-                </geometry>
-            </collision>
-            <inertial>
-                <mass value="0.011111" />
-                <origin xyz="0.0 0.0 0.0" />
-                <inertia ixx = "3.88172e-06" ixy = "-2.29456e-13" ixz = "8.33e-07"
-                         iyx = "0.000000" iyy = "1.92174e-06" iyz = "2.04435e-13"
-                         izx = "0.000000" izy = "0.000000" izz = "4.32374e-06" />
-            </inertial>
-        </link>
-        
-        <gazebo reference="${prefix}gripper_finger1_knuckle_link">
+        <gazebo reference="gripper_finger2_joint">
             <implicitSpringDamper>1</implicitSpringDamper>
-            <mu1>100000</mu1>
-            <mu2>100000</mu2>
-            <kp>100000000.0</kp>
-            <kd>1.0</kd>
-        </gazebo>   
+        </gazebo>
 
-        <link name="${prefix}gripper_finger2_knuckle_link">
+        <link name="gripper_finger1_knuckle_link">
             <visual>
                 <geometry>
                     <mesh filename="package://dh_robotics_ag95_description/meshes/visual/crank_Link.STL"  scale = "0.001 0.001 0.001"/>
@@ -105,33 +88,73 @@
             </inertial>
         </link>
 
-        <gazebo reference="${prefix}gripper_finger2_knuckle_link">
-            <implicitSpringDamper>1</implicitSpringDamper>
-            <mu1>100000</mu1>
-            <mu2>100000</mu2>
+        <gazebo reference="gripper_finger1_knuckle_link">
+            <turnGravityOff>true</turnGravityOff>
+            <mu1>0.9</mu1>
+            <mu2>0.9</mu2>
             <kp>100000000.0</kp>
             <kd>1.0</kd>
-        </gazebo> 
+            <maxVel>0.0</maxVel>
+            <minDepth>0.001</minDepth>
+        </gazebo>
 
-        <joint name="${prefix}gripper_finger1_finger_joint" type="continuous">
-            <parent link="${prefix}gripper_finger1_knuckle_link"/>
-            <child link="${prefix}gripper_finger1_finger_link"/>
+        <link name="gripper_finger2_knuckle_link">
+            <visual>
+                <geometry>
+                    <mesh filename="package://dh_robotics_ag95_description/meshes/visual/crank_Link.STL"  scale = "0.001 0.001 0.001"/>
+                </geometry>
+            </visual>
+            <collision>
+                <geometry>
+                    <mesh filename="package://dh_robotics_ag95_description/meshes/visual/crank_Link.STL"  scale = "0.001 0.001 0.001"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <mass value="0.011111" />
+                <origin xyz="0.0 0.0 0.0" />
+                <inertia ixx = "3.88172e-06" ixy = "-2.29456e-13" ixz = "8.33e-07"
+                         iyx = "0.000000" iyy = "1.92174e-06" iyz = "2.04435e-13"
+                         izx = "0.000000" izy = "0.000000" izz = "4.32374e-06" />
+            </inertial>
+        </link>
+
+        <gazebo reference="gripper_finger2_knuckle_link">
+            <turnGravityOff>true</turnGravityOff>
+            <mu1>0.9</mu1>
+            <mu2>0.9</mu2>
+            <kp>100000000.0</kp>
+            <kd>1.0</kd>
+            <maxVel>0.0</maxVel>
+            <minDepth>0.001</minDepth>
+        </gazebo>
+
+        <joint name="gripper_finger1_finger_joint" type="continuous">
+            <parent link="gripper_finger1_knuckle_link"/>
+            <child link="gripper_finger1_finger_link"/>
             <axis xyz="0 -1 0"/>
             <origin xyz="0.0292080077784 0.0 -0.0227132622407" rpy="0 0 0" />
-            <limit lower="-3.14" upper="3.14" velocity="100.0" effort="0.1"/>
-            <mimic joint="${prefix}gripper_finger1_joint" multiplier="0.4563942" offset="0"/>
+            <limit lower="-3.14" upper="3.14" velocity="2.0" effort="1"/>
+            <mimic joint="gripper_finger1_joint" multiplier="0.4563942" offset="0"/>
+            <dynamics damping="0.7"/>
         </joint>
+        <gazebo reference="gripper_finger1_finger_joint">
+            <implicitSpringDamper>1</implicitSpringDamper>
+        </gazebo>
 
-        <joint name="${prefix}gripper_finger2_finger_joint" type="continuous">
-            <parent link="${prefix}gripper_finger2_knuckle_link"/>
-            <child link="${prefix}gripper_finger2_finger_link"/>
+        <joint name="gripper_finger2_finger_joint" type="continuous">
+            <parent link="gripper_finger2_knuckle_link"/>
+            <child link="gripper_finger2_finger_link"/>
             <axis xyz="0 -1 0"/>
             <origin xyz="0.0292080077784 0.0 -0.0227132622407" rpy="0 0 0" />
-            <limit lower="-3.14" upper="3.14" velocity="100.0" effort="0.1"/>
-            <mimic joint="${prefix}gripper_finger1_joint" multiplier="0.4563942" offset="0"/>
+            <limit lower="-3.14" upper="3.14" velocity="2.0" effort="1"/>
+            <mimic joint="gripper_finger1_joint" multiplier="0.4563942" offset="0"/>
+            <dynamics damping="0.7"/>
         </joint>
+        <gazebo reference="gripper_finger2_finger_joint">
+            <implicitSpringDamper>1</implicitSpringDamper>
+        </gazebo>
 
-        <link name="${prefix}gripper_finger1_finger_link">
+        <link name="gripper_finger1_finger_link">
             <visual>
                 <geometry>
                     <mesh filename="package://dh_robotics_ag95_description/meshes/visual/rod_Link.STL"  scale = "0.001 0.001 0.001"/>
@@ -151,15 +174,17 @@
             </inertial>
         </link>
 
-        <gazebo reference="${prefix}gripper_finger1_finger_link">
-            <implicitSpringDamper>1</implicitSpringDamper>
-            <mu1>100000</mu1>
-            <mu2>100000</mu2>
+        <gazebo reference="gripper_finger1_finger_link">
+            <turnGravityOff>true</turnGravityOff>
+            <mu1>0.9</mu1>
+            <mu2>0.9</mu2>
             <kp>100000000.0</kp>
             <kd>1.0</kd>
-        </gazebo>  
+            <maxVel>0.0</maxVel>
+            <minDepth>0.001</minDepth>
+        </gazebo>
 
-        <link name="${prefix}gripper_finger2_finger_link">
+        <link name="gripper_finger2_finger_link">
             <visual>
                 <geometry>
                     <mesh filename="package://dh_robotics_ag95_description/meshes/visual/rod_Link.STL"  scale = "0.001 0.001 0.001"/>
@@ -179,33 +204,43 @@
             </inertial>
         </link>
 
-        <gazebo reference="${prefix}gripper_finger2_finger_link">
-            <implicitSpringDamper>1</implicitSpringDamper>
-            <mu1>100000</mu1>
-            <mu2>100000</mu2>
+        <gazebo reference="gripper_finger2_finger_link">
+            <turnGravityOff>true</turnGravityOff>
+            <mu1>0.9</mu1>
+            <mu2>0.9</mu2>
             <kp>100000000.0</kp>
             <kd>1.0</kd>
-        </gazebo>  
+            <maxVel>0.0</maxVel>
+            <minDepth>0.001</minDepth>
+        </gazebo>
 
-        <joint name="${prefix}gripper_finger1_inner_knuckle_joint" type="continuous">
-            <parent link="${prefix}gripper_base_link"/>
-            <child link="${prefix}gripper_finger1_inner_knuckle_link"/>
+        <joint name="gripper_finger1_inner_knuckle_joint" type="continuous">
+            <parent link="gripper_base_link"/>
+            <child link="gripper_finger1_inner_knuckle_link"/>
             <axis xyz="0 -1 0"/>
             <origin rpy="0.0 0.0 ${pi}" xyz="-0.016 0 0.10586"/>
-            <limit lower="-3.14" upper="3.14" velocity="100.0" effort="0.1"/>
-            <mimic joint="${prefix}gripper_finger1_joint" multiplier="1.49462955"  offset="0"/>
+            <limit lower="-3.14" upper="3.14" velocity="2.0" effort="1"/>
+            <mimic joint="gripper_finger1_joint" multiplier="1.49462955" offset="0"/>
+            <dynamics damping="0.7"/>
         </joint>
+        <gazebo reference="gripper_finger1_inner_knuckle_joint">
+            <implicitSpringDamper>1</implicitSpringDamper>
+        </gazebo>
 
-        <joint name="${prefix}gripper_finger2_inner_knuckle_joint" type="continuous">
-            <parent link="${prefix}gripper_base_link"/>
-            <child link="${prefix}gripper_finger2_inner_knuckle_link"/>
+        <joint name="gripper_finger2_inner_knuckle_joint" type="continuous">
+            <parent link="gripper_base_link"/>
+            <child link="gripper_finger2_inner_knuckle_link"/>
             <axis xyz="0 -1 0"/>
             <origin rpy="0.0 0.0 0.0" xyz="0.016 0 0.10586"/>
-            <limit lower="-3.14" upper="3.14" velocity="100.0" effort="0.1"/>
-            <mimic joint="${prefix}gripper_finger1_joint" multiplier="1.49462955" offset="0"/>
+            <limit lower="-3.14" upper="3.14" velocity="2.0" effort="1"/>
+            <mimic joint="gripper_finger1_joint" multiplier="1.49462955" offset="0"/>
+            <dynamics damping="0.7"/>
         </joint>
+        <gazebo reference="gripper_finger2_inner_knuckle_joint">
+            <implicitSpringDamper>1</implicitSpringDamper>
+        </gazebo>
 
-        <link name="${prefix}gripper_finger1_inner_knuckle_link">
+        <link name="gripper_finger1_inner_knuckle_link">
             <visual>
                 <geometry>
                     <mesh filename="package://dh_robotics_ag95_description/meshes/visual/proximal_phalanx_Link.STL"  scale = "0.001 0.001 0.001"/>
@@ -225,15 +260,17 @@
             </inertial>
         </link>
 
-        <gazebo reference="${prefix}gripper_finger1_inner_knuckle_link">
-            <implicitSpringDamper>1</implicitSpringDamper>
-            <mu1>100000</mu1>
-            <mu2>100000</mu2>
+        <gazebo reference="gripper_finger1_inner_knuckle_link">
+            <turnGravityOff>true</turnGravityOff>
+            <mu1>0.9</mu1>
+            <mu2>0.9</mu2>
             <kp>100000000.0</kp>
             <kd>1.0</kd>
-        </gazebo> 
-        
-        <link name="${prefix}gripper_finger2_inner_knuckle_link">
+            <maxVel>0.0</maxVel>
+            <minDepth>0.001</minDepth>
+        </gazebo>
+
+        <link name="gripper_finger2_inner_knuckle_link">
             <visual>
                 <geometry>
                     <mesh filename="package://dh_robotics_ag95_description/meshes/visual/proximal_phalanx_Link.STL"  scale = "0.001 0.001 0.001"/>
@@ -253,34 +290,44 @@
             </inertial>
         </link>
 
-        <gazebo reference="${prefix}gripper_finger2_inner_knuckle_link">
-            <implicitSpringDamper>1</implicitSpringDamper>
-            <mu1>100000</mu1>
-            <mu2>100000</mu2>
+        <gazebo reference="gripper_finger2_inner_knuckle_link">
+            <turnGravityOff>true</turnGravityOff>
+            <mu1>0.9</mu1>
+            <mu2>0.9</mu2>
             <kp>100000000.0</kp>
             <kd>1.0</kd>
-        </gazebo> 
+            <maxVel>0.0</maxVel>
+            <minDepth>0.001</minDepth>
+        </gazebo>
 
-        <joint name="${prefix}gripper_finger1_finger_tip_joint" type="continuous">
-            <parent link="${prefix}gripper_finger1_inner_knuckle_link"/>
-            <child link="${prefix}gripper_finger1_finger_tip_link"/>
+        <joint name="gripper_finger1_finger_tip_joint" type="continuous">
+            <parent link="gripper_finger1_inner_knuckle_link"/>
+            <child link="gripper_finger1_finger_tip_link"/>
             <axis xyz="0 1 0"/>
             <origin xyz="0.0394969463769 0.0 0.0382752038125 " rpy="0.0 0.0 0.0"/>
-            <limit lower="-3.14" upper="3.14" velocity="100.0" effort="0.1"/>
-            <mimic joint="${prefix}gripper_finger1_joint" multiplier="1.49462955"/>
+            <limit lower="-3.14" upper="3.14" velocity="2.0" effort="1"/>
+            <mimic joint="gripper_finger1_joint" multiplier="1.49462955"/>
+            <dynamics damping="0.7"/>
         </joint>
+        <gazebo reference="gripper_finger1_finger_tip_joint">
+            <implicitSpringDamper>1</implicitSpringDamper>
+        </gazebo>
 
-        <joint name="${prefix}gripper_finger2_finger_tip_joint" type="continuous">
-            <parent link="${prefix}gripper_finger2_inner_knuckle_link"/>
-            <child link="${prefix}gripper_finger2_finger_tip_link"/>
+        <joint name="gripper_finger2_finger_tip_joint" type="continuous">
+            <parent link="gripper_finger2_inner_knuckle_link"/>
+            <child link="gripper_finger2_finger_tip_link"/>
             <axis xyz="0 1 0"/>
             <origin rpy="0.0 0.0 0.0" xyz="0.0394969463769  0.0 0.0382752038125  "/>
-            <limit lower="-3.14" upper="3.14" velocity="100.0" effort="0.1"/>
-            <mimic joint="${prefix}gripper_finger1_joint" multiplier="1.49462955"/>
+            <limit lower="-3.14" upper="3.14" velocity="2.0" effort="1"/>
+            <mimic joint="gripper_finger1_joint" multiplier="1.49462955"/>
+            <dynamics damping="0.7"/>
         </joint>
+        <gazebo reference="gripper_finger2_finger_tip_joint">
+            <implicitSpringDamper>1</implicitSpringDamper>
+        </gazebo>
 
 
-        <link name="${prefix}gripper_finger1_finger_tip_link">
+        <link name="gripper_finger1_finger_tip_link">
             <visual>
                 <geometry>
                     <mesh filename="package://dh_robotics_ag95_description/meshes/visual/distal_phalanx_Link.STL"  scale = "0.001 0.001 0.001"/>
@@ -298,17 +345,19 @@
                          iyx = "0.000000" iyy = "3.03961e-06" iyz = "2.16427e-13"
                          izx = "0.000000" izy = "0.000000" izz = "1.11815e-06" />
             </inertial>
-        </link> 
-        
-        <gazebo reference="${prefix}gripper_finger1_finger_tip_link">
-            <implicitSpringDamper>1</implicitSpringDamper>
-            <mu1>100000</mu1>
-            <mu2>100000</mu2>
+        </link>
+
+        <gazebo reference="gripper_finger1_finger_tip_link">
+            <turnGravityOff>true</turnGravityOff>
+            <mu1>0.9</mu1>
+            <mu2>0.9</mu2>
             <kp>100000000.0</kp>
             <kd>1.0</kd>
-        </gazebo> 
+            <maxVel>0.0</maxVel>
+            <minDepth>0.001</minDepth>
+        </gazebo>
 
-        <link name="${prefix}gripper_finger2_finger_tip_link">
+        <link name="gripper_finger2_finger_tip_link">
             <visual>
                 <geometry>
                     <mesh filename="package://dh_robotics_ag95_description/meshes/visual/distal_phalanx_Link.STL" scale = "0.001 0.001 0.001"/>
@@ -327,43 +376,39 @@
                          izx = "0.000000" izy = "0.000000" izz = "1.11815e-06" />
             </inertial>
         </link>
-        
-        <gazebo reference="${prefix}gripper_finger2_finger_tip_link">
-            <implicitSpringDamper>1</implicitSpringDamper>
-            <mu1>100000</mu1>
-            <mu2>100000</mu2>
+
+        <gazebo reference="gripper_finger2_finger_tip_link">
+            <turnGravityOff>true</turnGravityOff>
+            <mu1>0.9</mu1>
+            <mu2>0.9</mu2>
             <kp>100000000.0</kp>
             <kd>1.0</kd>
-        </gazebo> 
+            <maxVel>0.0</maxVel>
+            <minDepth>0.001</minDepth>
+        </gazebo>
 
         <gazebo>
             <plugin name="gazebo_grasp_fix" filename="libgazebo_grasp_fix.so">
                 <arm>
                     <arm_name>gripper_arm</arm_name>
                     <palm_link>wrist_3_link</palm_link>
-                    <gripper_link>${prefix}gripper_finger1_finger_tip_link</gripper_link>
-                    <gripper_link>${prefix}gripper_finger2_finger_tip_link</gripper_link>
+                    <gripper_link>gripper_finger1_finger_tip_link</gripper_link>
+                    <gripper_link>gripper_finger2_finger_tip_link</gripper_link>
+                    <!-- <gripper_link>gripper_finger1_inner_knuckle_link</gripper_link> -->
+                    <!-- <gripper_link>gripper_finger2_inner_knuckle_link</gripper_link> -->
                 </arm>
 
-                <!-- <forces_angle_tolerance>100</forces_angle_tolerance>
-                <update_rate>4</update_rate>
-                <grip_count_threshold>4</grip_count_threshold>
-                <max_grip_count>8</max_grip_count>
-                <release_tolerance>0.005</release_tolerance>
-                <disable_collisions_on_attach>false</disable_collisions_on_attach>
-                <contact_topic>__default_topic__</contact_topic> -->
-
-                <forces_angle_tolerance>105</forces_angle_tolerance>
-                <update_rate>20</update_rate>
+                <forces_angle_tolerance>90</forces_angle_tolerance>
+                <update_rate>150</update_rate>
                 <grip_count_threshold>1</grip_count_threshold>
-                <max_grip_count>3</max_grip_count>
+                <max_grip_count>5</max_grip_count>
                 <release_tolerance>0.005</release_tolerance>
                 <disable_collisions_on_attach>true</disable_collisions_on_attach>
                 <contact_topic>__default_topic__</contact_topic>
             </plugin>
         </gazebo>
-        
-        <xacro:dh_robotics_ag95_gripper_transmission prefix="${prefix}" />
+
+        <xacro:dh_robotics_ag95_gripper_transmission prefix="" />
 
     </xacro:macro>
 </robot>

@@ -95,11 +95,14 @@ add_executable(geometric_method_grasp ${geometric_method_SrcFiles})
 add_dependencies(geometric_method_grasp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(geometric_method_grasp ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 ## GPD_method_grasp ##
-aux_source_directory(${PROJECT_SOURCE_DIR}/grasp/GPD_method/src GPD_method_SrcFiles)
-add_executable(GPD_method_grasp ${GPD_method_SrcFiles})
+add_executable(GPD_method_grasp ${PROJECT_SOURCE_DIR}/grasp/GPD_method/src/main.cpp)
 add_dependencies(GPD_method_grasp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(GPD_method_grasp ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+target_link_libraries(GPD_method_grasp ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_LIBRARIES})
 
+# 验证GPD是否可用 #
+add_executable(test_gpd ${PROJECT_SOURCE_DIR}/grasp/GPD_method/src/open_a_file_and_pub_sample.cpp)
+add_dependencies(test_gpd ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(test_gpd ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${PCL_LIBRARIES})
 
 # 数据采集部分 #
 aux_source_directory(${PROJECT_SOURCE_DIR}/data_collection/src data_collection_SrcFiles)
